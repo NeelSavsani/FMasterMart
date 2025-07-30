@@ -1,0 +1,94 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+
+:root {
+    --primary: #013937;
+    --primary-dark: #022d2b;
+    --primary-light: #f1fdfc;
+    --accent: #9ef3f1;
+
+    --black: #000000;
+    --white: #ffffff;
+    --white-transparent: rgba(255, 255, 255, 0.5);
+    --transparent-white-20: rgba(255, 255, 255, 0.2);
+    --transparent-black-70: rgba(0, 0, 0, 0.7);
+    --transparent-black-50: rgba(0, 0, 0, 0.5);
+
+    --gray-100: #f5f5f5;
+    --gray-200: #f0f0f0;
+    --gray-300: #eeeeee;
+    --gray-400: #c9c9c9;
+    --gray-500: #9e9e9e;
+    --gray-600: #6e6e6e;
+    --gray-700: #4b4b4b;
+    --gray-800: #3c3c3c;
+    --gray-900: #222222;
+
+    --blue-light: #f0f8ff;
+    --blue: #0074cc;
+    --blue-dark: #1e4c73;
+
+    --red: #e02020;
+    --red-light: #fbeaea;
+    --green: #28a745;
+    --green-light: #e6f4ea;
+    --orange: #ff9f1c;
+    --orange-light: #fff7ed;
+    --yellow: #facc15;
+    --yellow-light: #fef9c3;
+    --purple: #6b5b95;
+    --pink: #ff69b4;
+
+    --bg-light: #ffffff;
+    --bg-dark: #07080A;
+    --border-color: #dfeaff;
+    --border-dark: #3c3c3c;
+    --button-secondary-hover-bg: #f0f0f0;
+    --footer-light-bg: #f3f4f6;
+    --footer-dark-bg: #27272a;
+    --footer-light-text: #6b7280;
+    --footer-dark-text: #a1a1aa;
+}
+
+.footer {
+  background-color: var(--footer-light-bg);
+  text-align: center;
+  padding: 20px 10px;
+  font-family: "Poppins", sans-serif;
+  font-size: 0.9rem;
+  color: var(--footer-light-text);
+}
+
+.dark-mode .footer{
+  background: var(--footer-dark-bg);
+  color: var(--footer-dark-text);
+}
+
+span.mastereagle{
+  text-decoration: underline;
+  font-size:18px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+span.mastereagle:hover{
+  color: var(--green);
+  transition: all 0.3s;
+}
+
+.footer .fa-heart:hover {
+  color: red;
+  cursor: pointer;
+}
+
+.footer hr {
+  border: none;
+  border-top: 1px solid #333;
+  margin-bottom: 10px;
+}
+
+@media (max-width: 600px) {
+  .footer {
+    font-size: 0.8rem;
+    padding: 15px 5px;
+  }
+}

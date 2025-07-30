@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shopping Cart</title>
+    <link rel="stylesheet" href="css/cart.css" />
+    <link rel="stylesheet" href="css/header.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+
+<body>
+    <div class="header-wrapper">
+        <header>
+            <nav class="navbar">
+                <div class="logo" onclick="gotoHome()">
+                    <img src="assets/MasterEagle.png" alt="Logo" />
+                    <span>MasterMart</span>
+                </div>
+                <div class="nav-actions">
+                    <button onclick="gotoWishlist()" title="Wishlist"><i class="fa-solid fa-heart"></i></button>
+                    <div class="profile-menu">
+                        <button onclick="toggleDropdown(event)">
+                            <i class="fa-solid fa-user"></i>
+                        </button>
+                        <div class="dropdown" id="profileDropdown">
+                            <button onclick="alert('My Profile')"><i class="fa-solid fa-user"></i> My Profile</button>
+                            <button onclick="alert('Orders')"><i class="fa-solid fa-box"></i> Orders</button>
+                            <hr>
+                            <button onclick="toggleTheme()"><i class="fa-solid fa-moon"></i> Light/Dark</button>
+                            <hr>
+                            <button onclick="alert('Logout')" id="logout"><i
+                                    class="fa-solid fa-arrow-right-from-bracket"></i> Logout</button>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </header>
+    </div>
+    <div class="cart-container">
+        <header class="cart-header">
+            <button class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to Shopping</button>
+            <h1>Shopping Cart</h1>
+            <button class="clear-cart-btn">
+                <i class="fa-solid fa-trash"></i>
+                Clear Cart
+            </button>
+        </header>
+
+        <main class="cart-main">
+
+            <section class="cart-items" id="cartItems"></section>
+            <div class="empty-cart" id="emptyCart" style="display: none;">
+                <div class="empty-icon">
+                    <i class="fa-solid fa-bag-shopping fa-4x" style="color:#6c6c6c;"></i>
+                </div>
+                <h2>Your cart is empty</h2>
+                <p>Looks like you haven't added anything to your cart yet.</p>
+                <button class="start-shopping-btn" onclick="gotoHome()">Start Shopping</button>
+            </div>
+
+
+            <aside class="cart-summary" id="cartSummary">
+                <h2>Order Summary</h2>
+                <div class="summary-line">
+                    <span>Items (<span id="totalItems">0</span>)</span>
+                    <span id="summaryAmount">₹0.00</span>
+                </div>
+                <div class="summary-line">
+                    <span>Shipping</span><span class="free">Free</span>
+                </div>
+                <div class="summary-line">
+                    <span>Tax</span><span>Calculated at checkout</span>
+                </div>
+                <div class="summary-total">
+                    <strong>Total</strong><strong id="grandTotal">₹0.00</strong>
+                </div>
+                <button class="checkout-btn">Proceed to Checkout</button>
+                <p class="summary-note">
+                    Free shipping on orders over ₹1,000<br />
+                    Secure checkout with 256-bit SSL
+                </p>
+            </aside>
+        </main>
+    </div>
+
+
+    <script src="js/cart.js"></script>
+    <script src="js/header.js"></script>
+</body>
+
+</html>
