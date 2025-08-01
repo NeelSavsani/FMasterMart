@@ -4,6 +4,20 @@ document.addEventListener("DOMContentLoaded", () => {
     const profileDropdown = document.getElementById("profileDropdown");
     const clearSearchBtn = document.getElementById("clearSearchBtn");
     const searchInput = document.getElementById("searchInput");
+    searchButton.addEventListener("click", () => {
+        // Just close the floating searchbar
+        floatingSearch.classList.remove("show");
+
+        // Restore search icon
+        const icon = searchToggleBtn.querySelector("i");
+        icon.classList.remove("fa-xmark");
+        icon.classList.add("fa-magnifying-glass");
+
+        // ✅ DO NOT clear the input value
+        // ✅ Keep filtered products as-is
+
+        adjustCardWidthOnSearch(); // re-apply layout rules
+    });
 
     if (searchToggleBtn && floatingSearch && profileDropdown) {
         searchToggleBtn.addEventListener("click", () => {
@@ -19,16 +33,20 @@ document.addEventListener("DOMContentLoaded", () => {
                 icon.classList.remove("fa-xmark");
                 icon.classList.add("fa-magnifying-glass");
 
-                //Reset input and hide clear button
-                searchInput.value = "";
-                clearSearchBtn.style.display = "none";
+                // ✅ Don't reset the search input value
+                // searchInput.value = ""; ❌ remove this line
 
-                // Restore all product cards
-                document.querySelectorAll(".product-card").forEach(card => {
-                    card.style.display = "block";
-                });
+                // ✅ Keep clearSearchBtn visible if there's still input
+                clearSearchBtn.style.display = searchInput.value.trim().length > 0 ? "inline" : "none";
 
-                // ✅ Reset layout properly
+                // ✅ Do NOT restore product cards if input is not empty
+                if (searchInput.value.trim() === "") {
+                    document.querySelectorAll(".product-card").forEach(card => {
+                        card.style.display = "block";
+                    });
+                }
+
+                // ✅ Always fix layout according to search result
                 adjustCardWidthOnSearch();
             }
         });
