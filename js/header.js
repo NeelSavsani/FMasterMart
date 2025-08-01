@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const floatingSearch = document.getElementById("floatingSearch");
     const profileDropdown = document.getElementById("profileDropdown");
     const clearSearchBtn = document.getElementById("clearSearchBtn");
-
+    const searchInput = document.getElementById("searchInput");
 
     if (searchToggleBtn && floatingSearch && profileDropdown) {
         searchToggleBtn.addEventListener("click", () => {
@@ -14,47 +14,53 @@ document.addEventListener("DOMContentLoaded", () => {
             if (floatingSearch.classList.contains("show")) {
                 icon.classList.remove("fa-magnifying-glass");
                 icon.classList.add("fa-xmark");
+                searchInput.focus();
             } else {
                 icon.classList.remove("fa-xmark");
                 icon.classList.add("fa-magnifying-glass");
 
+                //Reset input and hide clear button
                 searchInput.value = "";
                 clearSearchBtn.style.display = "none";
-                const productCards = document.querySelectorAll(".product-card");
-                productCards.forEach(card => card.style.display = "block");
+
+                // Restore all product cards
+                document.querySelectorAll(".product-card").forEach(card => {
+                    card.style.display = "block";
+                });
+
+                // ✅ Reset layout properly
+                adjustCardWidthOnSearch();
             }
         });
     }
 
-    document.getElementById("searchInput").addEventListener("keyup", function () {
+    //Search filtering
+    searchInput.addEventListener("keyup", function () {
         const query = this.value.toLowerCase();
-        clearSearchBtn.style.display = query ? "inline" : "none";
-        const productCards = document.querySelectorAll(".product-card"); // adjust if your product class differs
+        const productCards = document.querySelectorAll(".product-card");
 
         productCards.forEach(card => {
-            const nameElem = card.querySelector(".product-name");
-            if (!nameElem) {
-                console.warn("Missing .product-name in a product-card:", card);
-                return;
-            }  // skip if .product-name is missing
-
-            const name = nameElem.textContent.toLowerCase();
-            if (name.includes(query)) {
+            const productName = card.querySelector(".product-name");
+            if (productName && productName.textContent.toLowerCase().includes(query)) {
                 card.style.display = "";
             } else {
                 card.style.display = "none";
             }
         });
+
+        //Show or hide clear button
+        clearSearchBtn.style.display = query.length > 0 ? "inline" : "none";
         adjustCardWidthOnSearch(); // ✅ Add this here
     });
 
+    //clear search input and reset cards
     clearSearchBtn.addEventListener("click", function () {
         searchInput.value = "";
         clearSearchBtn.style.display = "none";
 
-        const productCards = document.querySelectorAll(".product-card");
-        productCards.forEach(card => card.style.display = "block");
-        searchInput.focus();
+        document.querySelectorAll(".product-card").forEach(card => {
+            card.style.display = "block";
+        });
         adjustCardWidthOnSearch(); // ✅ Add this here
     });
 
@@ -73,6 +79,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 const icon = searchToggleBtn.querySelector("i");
                 icon.classList.remove("fa-xmark");
                 icon.classList.add("fa-magnifying-glass");
+            } else {
+                document.querySelectorAll(".product-card").forEach(card => {
+                    card.style.display = "block";
+                });
+
+                // ✅ Add this line here
+                adjustCardWidthOnSearch();
             }
         }
     });
