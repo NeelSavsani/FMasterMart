@@ -40,11 +40,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const name = nameElem.textContent.toLowerCase();
             if (name.includes(query)) {
-                card.style.display = "block";
+                card.style.display = "";
             } else {
                 card.style.display = "none";
             }
         });
+        adjustCardWidthOnSearch(); // ✅ Add this here
     });
 
     clearSearchBtn.addEventListener("click", function () {
@@ -54,6 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const productCards = document.querySelectorAll(".product-card");
         productCards.forEach(card => card.style.display = "block");
         searchInput.focus();
+        adjustCardWidthOnSearch(); // ✅ Add this here
     });
 
     document.addEventListener("click", function (e) {
@@ -126,4 +128,25 @@ function updateCartBadge(count) {
 
     badge.textContent = count > 0 ? count : "";
     badge.style.display = count > 0 ? "inline-block" : "none";
+}
+
+function adjustCardWidthOnSearch() {
+    const productCards = Array.from(document.querySelectorAll(".product-card")).filter(c => c.style.display !== "none");
+    const productList = document.querySelector(".product-list");
+
+    if (!productList) return;
+
+    if (productCards.length === 1) {
+        productList.style.display = "flex";
+        productList.style.justifyContent = "center";
+        productCards[0].style.maxWidth = "350px"; // control width
+        productCards[0].style.flex = "0 1 auto"; // prevent stretching
+    } else {
+        productList.style.display = "";
+        productList.style.justifyContent = "";
+        productCards.forEach(card => {
+            card.style.maxWidth = "";
+            card.style.flex = "";
+        });
+    }
 }
