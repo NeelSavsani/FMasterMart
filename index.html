@@ -10,8 +10,6 @@
     <link rel="stylesheet" href="css/products.css">
     <link rel="stylesheet" href="css/footer.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-
-
 </head>
 
 <body>
@@ -45,7 +43,8 @@
                             <button onclick="toggleTheme()"><i class="fa-solid fa-moon"></i> Light/Dark</button>
                             <hr>
                             <button onclick="gotoLogin()" id="login"><i
-                                    class="fa-solid fa-arrow-right-from-bracket"></i> Login</button>
+                                    class="fa-solid fa-arrow-right-from-bracket"></i> <span
+                                    id="loginMenuItem">LogIn</span></button>
                         </div>
                     </div>
                 </div>
@@ -77,6 +76,44 @@
 
     <script src="js/header.js"></script>
     <script src="js/products.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDTkV-Tz1ukcViGLoHzkKGII7Uw-EOoN0w",
+            authDomain: "mastermart-19050.firebaseapp.com",
+            projectId: "mastermart-19050",
+            storageBucket: "mastermart-19050.firebasestorage.app",
+            messagingSenderId: "724870756192",
+            appId: "1:724870756192:web:913ef96cf4215427f01005",
+            measurementId: "G-9C9F78L4EY"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+
+        firebase.auth().onAuthStateChanged(function (user) {
+            const loginMenuItem = document.getElementById('loginMenuItem');
+            const loginBtn = document.getElementById('login');
+            if (!loginMenuItem || !loginBtn) return;
+
+            if (user) {
+                loginMenuItem.innerText = "Logout";
+                loginBtn.onclick = function (e) {
+                    e.preventDefault();
+                    firebase.auth().signOut().then(() => {
+                        window.location.reload();
+                    });
+                };
+            } else {
+                loginMenuItem.innerText = "Login";
+                loginBtn.onclick = function () {
+                    window.location.href = "/login.html";
+                };
+            }
+        });
+    </script>
+
 </body>
 
 </html>
