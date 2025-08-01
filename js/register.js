@@ -31,7 +31,7 @@ document.getElementById("registerForm").addEventListener("submit", function (e) 
 
     fetch("https://bmastermart.onrender.com/registerS.php", {
         method: "POST",
-        header: {
+        headers: {
             "Content-Type": "application/x-www-form-urlencoded"
         },
         body: new URLSearchParams({
