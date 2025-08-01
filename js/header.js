@@ -75,6 +75,10 @@ function gotoWishlist() {
     window.location.href = "wishlist.html";
 }
 
+function gotoLogin(){
+    window.location.href = "login.html";
+}
+
 function devFolio() {
     window.open('https://neelsavsani.vercel.app', '_blank');
 }
