@@ -44,8 +44,8 @@
                             <hr>
                             <button onclick="toggleTheme()"><i class="fa-solid fa-moon"></i> Light/Dark</button>
                             <hr>
-                            <button onclick="gotoLogin()" id="logout"><i
-                                    class="fa-solid fa-arrow-right-from-bracket"></i> Logout</button>
+                            <button onclick="gotoLogin()" id="login"><i
+                                    class="fa-solid fa-arrow-right-from-bracket"></i> Login</button>
                         </div>
                     </div>
                 </div>
@@ -53,8 +53,9 @@
         </header>
 
         <div class="floating-search" id="floatingSearch">
-            <input type="text" placeholder="Search products..." />
-            <button><i class="fa-solid fa-magnifying-glass"></i></button>
+            <input type="text" id="searchInput" placeholder="Search products..." />
+            <button id="clearSearchBtn" class="clear-btn"><i class="fa-solid fa-xmark"></i></button>
+            <button id="searchButton"><i class="fa-solid fa-magnifying-glass"></i></button>
         </div>
     </div>
 

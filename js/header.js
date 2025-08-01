@@ -2,6 +2,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const searchToggleBtn = document.getElementById("searchToggleBtn");
     const floatingSearch = document.getElementById("floatingSearch");
     const profileDropdown = document.getElementById("profileDropdown");
+    const clearSearchBtn = document.getElementById("clearSearchBtn");
+
 
     if (searchToggleBtn && floatingSearch && profileDropdown) {
         searchToggleBtn.addEventListener("click", () => {
@@ -15,9 +17,44 @@ document.addEventListener("DOMContentLoaded", () => {
             } else {
                 icon.classList.remove("fa-xmark");
                 icon.classList.add("fa-magnifying-glass");
+
+                searchInput.value = "";
+                clearSearchBtn.style.display = "none";
+                const productCards = document.querySelectorAll(".product-card");
+                productCards.forEach(card => card.style.display = "block");
             }
         });
     }
+
+    document.getElementById("searchInput").addEventListener("keyup", function () {
+        const query = this.value.toLowerCase();
+        clearSearchBtn.style.display = query ? "inline" : "none";
+        const productCards = document.querySelectorAll(".product-card"); // adjust if your product class differs
+
+        productCards.forEach(card => {
+            const nameElem = card.querySelector(".product-name");
+            if (!nameElem) {
+                console.warn("Missing .product-name in a product-card:", card);
+                return;
+            }  // skip if .product-name is missing
+
+            const name = nameElem.textContent.toLowerCase();
+            if (name.includes(query)) {
+                card.style.display = "block";
+            } else {
+                card.style.display = "none";
+            }
+        });
+    });
+
+    clearSearchBtn.addEventListener("click", function () {
+        searchInput.value = "";
+        clearSearchBtn.style.display = "none";
+
+        const productCards = document.querySelectorAll(".product-card");
+        productCards.forEach(card => card.style.display = "block");
+        searchInput.focus();
+    });
 
     document.addEventListener("click", function (e) {
         const isInsideDropdown = e.target.closest(".profile-menu");
@@ -75,7 +112,7 @@ function gotoWishlist() {
     window.location.href = "wishlist.html";
 }
 
-function gotoLogin(){
+function gotoLogin() {
     window.location.href = "login.html";
 }
 

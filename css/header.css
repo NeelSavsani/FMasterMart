@@ -204,8 +204,8 @@ header {
     z-index: 1010;
 }
 
-.navbar .nav-actions button#logout {
-    color: red;
+.navbar .nav-actions button#login {
+    color: var(--purplee);
 }
 
 .navbar .nav-actions .dropdown hr {
@@ -280,16 +280,18 @@ header {
 .floating-search input {
     flex: 1;
     height: 48px;
-    padding: 0 14px;
+    /* padding: 0 14px; */
+    padding: 6px 32px 6px 10px;
     font-size: 16px;
     border: 1px solid #ccc;
     border-right: none;
     border-radius: 8px 0 0 8px;
+    max-width: 500px;
     outline: none;
     box-sizing: border-box;
 }
 
-.floating-search button {
+.floating-search button#searchButton {
     height: 48px;
     width: 48px;
     background: var(--primary-dark);
@@ -302,6 +304,19 @@ header {
     align-items: center;
     justify-content: center;
     box-sizing: border-box;
+}
+
+.floating-search button.clear-btn {
+    position: absolute;
+    display: none;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    font-size: 18px;
+    right: 36px;
+    top: 50%;
+    transform: translateY(-50%) translateX(-90%);
+    background: none;
 }
 
 

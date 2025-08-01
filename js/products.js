@@ -226,7 +226,7 @@ async function renderProducts() {
       <span class="wishlist"><i class="${isInWishlist(p.name) ? 'fa-solid' : 'fa-regular'} fa-heart"></i></span>
       <div class="image"><img src="${imageUrl}" alt="${p.name}" /></div>
       <div class="category">${p.category}</div>
-      <h3>${p.name}</h3>
+      <h3 class="product-name">${p.name}</h3>
       <div class="rating">${"★".repeat(p.rating)}<span> (${p.ratingCount})</span></div>
       <div class="price">₹${p.price.toLocaleString("en-IN")}
         ${p.oldPrice ? `<span class="old">₹${p.oldPrice.toLocaleString("en-IN")}</span>` : ""}
