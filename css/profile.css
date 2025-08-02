@@ -59,11 +59,10 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 0 10px;
+    padding: 0 7px;
     width: 50%;
     margin: auto;
     border-radius: 10px;
-    padding-top: 0;
     height: 50px;
     background: var(--tabs-back);
 }
@@ -73,13 +72,18 @@
     color: var(--tabs-color);
     font-family: "Poppins", sans-serif;
     font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
     width: 50%;
+    padding: 10px 20px;
     background: transparent;
 }
 
 .tab.active {
     color: black;
     background: white;
+    box-shadow: 0.5px 0.5px 7px rgba(0, 0, 0, 0.5);
 }
 
 .tab-content {
@@ -121,13 +125,16 @@ label {
 }
 
 input,
+textarea,
 select {
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 5px;
+    resize: vertical;
+    font-family: "Poppins", sans-serif;
 }
 
-button {
+button#save {
     margin-top: 15px;
     background: purple;
     color: white;
@@ -143,28 +150,44 @@ button {
 
 @media screen and (max-width: 768px) {
     .container {
-        padding: 15px;
+        padding: 8px;
         width: 95%;
     }
 
     .tabs {
         width: 100%;
+        margin: 0;
         height: auto;
-        padding: 10px;
+        padding: 5px;
         gap: 10px;
         box-sizing: border-box;
     }
 
     .tab {
         width: 100%;
-        font-size: 15px;
+        font-size: 12px;
         text-align: center;
         border-radius: 8px;
+    }
+
+    .tab-content h2 {
+        font-size: 19px;
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
     }
 
     .row {
         flex-direction: row;
         gap: 12px;
+    }
+
+    label {
+        font-size: 13px;
     }
 
     .field {
@@ -174,12 +197,12 @@ button {
     input,
     select {
         width: 100%;
-        font-size: 14px;
+        font-size: 13px;
         box-sizing: border-box;
     }
 
     #gender {
-        width: 100%;
+        width: 50%;
     }
 
     button {

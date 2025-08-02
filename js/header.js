@@ -146,8 +146,7 @@ function gotoWishlist() {
 }
 
 function gotoLogin() {
-    window.location.href = "login.html";
-
+    window.location.href = "login.html"
 }
 
 function openProfile(){
@@ -186,3 +185,4 @@ function adjustCardWidthOnSearch() {
         });
     }
 }
+

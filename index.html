@@ -84,35 +84,16 @@
             apiKey: "AIzaSyDTkV-Tz1ukcViGLoHzkKGII7Uw-EOoN0w",
             authDomain: "mastermart-19050.firebaseapp.com",
             projectId: "mastermart-19050",
-            storageBucket: "mastermart-19050.firebasestorage.app",
+            databaseURL: "https://mastermart-19050-default-rtdb.asia-southeast1.firebasedatabase.app",
+            storageBucket: "mastermart-19050.appspot.com",
             messagingSenderId: "724870756192",
-            appId: "1:724870756192:web:913ef96cf4215427f01005",
-            measurementId: "G-9C9F78L4EY"
+            appId: "1:724870756192:web:913ef96cf4215427f01005"
         };
 
         firebase.initializeApp(firebaseConfig);
-
-        firebase.auth().onAuthStateChanged(function (user) {
-            const loginMenuItem = document.getElementById('loginMenuItem');
-            const loginBtn = document.getElementById('login');
-            if (!loginMenuItem || !loginBtn) return;
-
-            if (user) {
-                loginMenuItem.innerText = "Logout";
-                loginBtn.onclick = function (e) {
-                    e.preventDefault();
-                    firebase.auth().signOut().then(() => {
-                        window.location.reload();
-                    });
-                };
-            } else {
-                loginMenuItem.innerText = "Login";
-                loginBtn.onclick = function () {
-                    window.location.href = "/login.html";
-                };
-            }
-        });
     </script>
+    <script src="js/auth.js"></script>
+
 
 </body>
 

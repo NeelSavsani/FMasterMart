@@ -11,6 +11,7 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
+
 document.getElementById("loginForm").addEventListener("submit", function (e) {
     e.preventDefault();
 
@@ -22,54 +23,44 @@ document.getElementById("loginForm").addEventListener("submit", function (e) {
         return;
     }
 
-    // ✅ Firebase Auth Login
+    // ✅ Firebase Auth Login (v8 syntax)
     firebase.auth().signInWithEmailAndPassword(email, password)
-        .then(userCredential => {
+        .then((userCredential) => {
             const user = userCredential.user;
+            console.log("✅ Login successful:", user);
 
-            // ✅ Optional: fetch user profile from Realtime DB
-            return firebase.database().ref("users/" + user.uid).once("value");
-        })
-        .then(snapshot => {
-            const userData = snapshot.val();
-            if (userData) {
-                console.log("User data:", userData);
-                // You can store user info in localStorage or sessionStorage if needed
-            }
-            alert("Login successful!");
+            alert("✅ Login successful");
+
+            // Optional: Redirect
             window.location.href = "index.html";
         })
-        .catch(error => {
-            console.error("Login error:", error);
-
-            let msg = "Login failed. Please try again.";
-
-            try {
-                // Firebase SDK errors (standard)
-                if (
-                    error.code === "auth/user-not-found" ||
-                    error.code === "auth/wrong-password"
-                ) {
-                    msg = "Invalid email or password.";
-                } else if (error.code === "auth/invalid-email") {
-                    msg = "Please enter a valid email address.";
-                } else if (error.code === "auth/too-many-requests") {
-                    msg = "Too many attempts. Please wait and try again.";
-                }
-
-                // Defensive fallback for REST-style response
-                if (error.message?.includes("INVALID_LOGIN_CREDENTIALS")) {
-                    msg = "Invalid email or password.";
-                }
-
-            } catch (e) {
-                console.warn("Unknown login error format", e);
+        .catch((error) => {
+            console.error("Login error full:", error);
+            let code = error.code;
+            console.log(error.code);
+            switch (code) {
+                case 'auth/user-not-found':
+                    alert('🚫 User not found. Please register.');
+                    break;
+                case 'auth/wrong-password':
+                    alert('❌ Invalid password.');
+                    break;
+                case 'auth/invalid-email':
+                    alert('⚠️ Invalid email format.');
+                    break;
+                case 'auth/too-many-requests':
+                    alert('⚠️ Too many failed attempts. Please try later.');
+                    break;
+                case 'auth/internal-error':
+                    alert('⚠️ Internal error. Please try again later or Try registering.');
+                    break;
+                default:
+                    alert('❌ Login failed. Please check your credentials.');
+                    break;
             }
-
-            alert(msg);
         });
-
 });
+
 
 // Toggle password visibility
 document.querySelectorAll(".toggle-password").forEach((toggle) => {
