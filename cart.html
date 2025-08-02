@@ -19,24 +19,34 @@
                     <span>MasterMart</span>
                 </div>
                 <div class="nav-actions">
+                    <button id="searchToggleBtn" title="Search">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
                     <button onclick="gotoWishlist()" title="Wishlist"><i class="fa-solid fa-heart"></i></button>
                     <div class="profile-menu">
                         <button onclick="toggleDropdown(event)">
                             <i class="fa-solid fa-user"></i>
                         </button>
                         <div class="dropdown" id="profileDropdown">
-                            <button onclick="alert('My Profile')"><i class="fa-solid fa-user"></i> My Profile</button>
+                            <button onclick="openProfile()"><i class="fa-solid fa-user"></i> My Profile</button>
                             <button onclick="alert('Orders')"><i class="fa-solid fa-box"></i> Orders</button>
                             <hr>
                             <button onclick="toggleTheme()"><i class="fa-solid fa-moon"></i> Light/Dark</button>
                             <hr>
-                            <button onclick="alert('Logout')" id="logout"><i
-                                    class="fa-solid fa-arrow-right-from-bracket"></i> Logout</button>
+                            <button onclick="gotoLogin()" id="login"><i
+                                    class="fa-solid fa-arrow-right-from-bracket"></i> <span
+                                    id="loginMenuItem">LogIn</span></button>
                         </div>
                     </div>
                 </div>
             </nav>
         </header>
+
+        <div class="floating-search" id="floatingSearch">
+            <input type="text" id="searchInput" placeholder="Search products..." />
+            <button id="clearSearchBtn" class="clear-btn"><i class="fa-solid fa-xmark"></i></button>
+            <button id="searchButton"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </div>
     </div>
     <div class="cart-container">
         <header class="cart-header">
@@ -86,8 +96,24 @@
     </div>
 
 
-    <script src="js/cart.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDTkV-Tz1ukcViGLoHzkKGII7Uw-EOoN0w",
+            authDomain: "mastermart-19050.firebaseapp.com",
+            projectId: "mastermart-19050",
+            databaseURL: "https://mastermart-19050-default-rtdb.asia-southeast1.firebasedatabase.app",
+            storageBucket: "mastermart-19050.appspot.com",
+            messagingSenderId: "724870756192",
+            appId: "1:724870756192:web:913ef96cf4215427f01005"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+    </script>
     <script src="js/header.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/cart.js"></script>
 </body>
 
 </html>

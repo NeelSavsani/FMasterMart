@@ -13,6 +13,17 @@ async function fetchImage(query) {
     }
 }
 
+firebase.auth().onAuthStateChanged(function (user) {
+    if (!user) {
+        alert("Please login first to access this page.");
+        window.location.href = "/register.html"; // or "/login.html"
+    } else {
+        // user is logged in, allow page logic to proceed
+        document.dispatchEvent(new Event("auth-ready"));
+    }
+});
+
+
 async function renderCart() {
     const cartItems = document.getElementById("cartItems");
     const emptyCart = document.getElementById("emptyCart");
@@ -84,7 +95,7 @@ function updateCartBadge(count) {
     badge.style.display = count > 0 ? "inline-block" : "none";
 }
 
-document.addEventListener("click", (e) => {
+document.addEventListener("auth-ready", () => {
     const cartItemEl = e.target.closest(".cart-item");
     if (!cartItemEl) return;
     const id = +cartItemEl.dataset.id;

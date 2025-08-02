@@ -237,9 +237,17 @@ async function renderProducts() {
     `;
 
         // Toggle wishlist
-        card.querySelector(".wishlist i").addEventListener("click", (e) => {
+        card.querySelector(".wishlist i").addEventListener("click", async (e) => {
             e.preventDefault();
             e.stopPropagation();
+
+            const user = await firebase.auth().currentUser;
+            if (!user) {
+                alert("Please login first to use wishlist.");
+                window.location.href = "/register.html";
+                return;
+            }
+
             e.target.classList.toggle("fa-regular");
             e.target.classList.toggle("fa-solid");
             updateWishlist(p.name);
@@ -247,6 +255,13 @@ async function renderProducts() {
 
         // Add to cart
         card.querySelector(".add-to-cart-btn").addEventListener("click", async () => {
+            const user = await firebase.auth().currentUser;
+            if (!user) {
+                alert("Please login first to add items to cart.");
+                window.location.href = "/register.html";
+                return;
+            }
+
             const existing = window.cart.find(item => item.name === p.name);
             if (existing) {
                 existing.qty += 1;
@@ -258,7 +273,7 @@ async function renderProducts() {
                     price: p.price,
                     originalPrice: p.oldPrice || p.price,
                     qty: 1,
-                    image: imageUrl // ✅ save image
+                    image: imageUrl
                 });
             }
             localStorage.setItem("cart", JSON.stringify(window.cart));

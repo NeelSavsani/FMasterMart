@@ -47,8 +47,24 @@
         <button onclick="addAllToCart()" class="add-all-btn">Add All to Cart 🛒</button>
         <div id="wishlist-list" class="product-grid"></div>
     </div>
-    <script src="js/wishlist.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDTkV-Tz1ukcViGLoHzkKGII7Uw-EOoN0w",
+            authDomain: "mastermart-19050.firebaseapp.com",
+            projectId: "mastermart-19050",
+            databaseURL: "https://mastermart-19050-default-rtdb.asia-southeast1.firebasedatabase.app",
+            storageBucket: "mastermart-19050.appspot.com",
+            messagingSenderId: "724870756192",
+            appId: "1:724870756192:web:913ef96cf4215427f01005"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+    </script>
     <script src="js/header.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/wishlist.js"></script>
 </body>
 
 </html>

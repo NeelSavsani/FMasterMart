@@ -13,6 +13,16 @@ async function fetchImage(query) {
     }
 }
 
+firebase.auth().onAuthStateChanged(function (user) {
+    if (!user) {
+        alert("Please login first to access this page.");
+        window.location.href = "/register.html"; // or "/login.html"
+    } else {
+        // user is logged in, allow page logic to proceed
+        document.dispatchEvent(new Event("auth-ready"));
+    }
+});
+
 // ✅ Load and render wishlist when page loads
 document.addEventListener('DOMContentLoaded', () => {
     const wishlist = JSON.parse(localStorage.getItem("wishlist") || "[]");
