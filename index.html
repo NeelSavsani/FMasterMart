@@ -37,6 +37,7 @@
                             <i class="fa-solid fa-user"></i>
                         </button>
                         <div class="dropdown" id="profileDropdown">
+                            <div id="name" style="text-align: center; background: #ccc; border-radius: 5px;"></div>
                             <button onclick="openProfile()"><i class="fa-solid fa-user"></i> My Profile</button>
                             <button onclick="alert('Orders')"><i class="fa-solid fa-box"></i> Orders</button>
                             <hr>
@@ -79,6 +80,7 @@
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyDTkV-Tz1ukcViGLoHzkKGII7Uw-EOoN0w",

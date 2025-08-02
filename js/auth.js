@@ -17,4 +17,21 @@ firebase.auth().onAuthStateChanged(function (user) {
             window.location.href = "/register.html";
         };
     }
+
+    if (user) {
+        const uid = user.uid;
+
+        // Read 'full_name' from Realtime Database
+        firebase.database().ref("users/" + uid + "/full_name").once("value")
+            .then((snapshot) => {
+                const fullName = snapshot.val();
+                const nameElement = document.getElementById("name");
+                if (nameElement && fullName) {
+                    nameElement.textContent = fullName;
+                }
+            })
+            .catch((error) => {
+                console.error("Error fetching full name:", error);
+            });
+    }
 });
