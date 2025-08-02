@@ -15,7 +15,9 @@ firebase.initializeApp(firebaseConfig);
 document.getElementById("registerForm").addEventListener("submit", function (e) {
     e.preventDefault();
 
-    const name = document.getElementById("name").value.trim();
+    const firstName = document.getElementById("firstName").value.trim();
+    const lastName = document.getElementById("lastName").value.trim();
+    const fullName = `${firstName} ${lastName}`;
     const email = document.getElementById("email").value.trim();
     const password = document.getElementById("password").value;
     const confirmPassword = document.getElementById("confirmPassword").value;
@@ -23,7 +25,7 @@ document.getElementById("registerForm").addEventListener("submit", function (e) 
     const cncode = document.getElementById("country-code").value;
     const phonenum = cncode + phone;
 
-    if (!name || !email || !password || !confirmPassword || !phone) {
+    if (!firstName || !lastName || !email || !password || !confirmPassword || !phone) {
         alert("All fields are required.");
         return;
     }
@@ -52,9 +54,11 @@ document.getElementById("registerForm").addEventListener("submit", function (e) 
             // ✅ Step 2: Store additional details in Realtime Database
             const userData = {
                 uid: uid,
-                name: name,
+                first_name: firstName,
+                last_name: lastName,
+                full_name: fullName,
                 email: email,
-                password: password, // ⚠️ Stored in plain text — be aware of the risks
+                password: password, // ⚠️ still plain text
                 phone: phonenum,
                 registration_date: new Date().toISOString(),
                 user_type: "customer"

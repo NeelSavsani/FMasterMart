@@ -86,6 +86,16 @@ form select {
   margin-bottom: 5px;
 }
 
+.name-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.name-row input {
+  flex: 1;
+}
+
 .password-wrapper {
   position: relative;
 }
