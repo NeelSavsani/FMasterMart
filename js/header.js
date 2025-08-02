@@ -146,9 +146,12 @@ function gotoWishlist() {
 }
 
 function gotoLogin() {
-    // window.location.href = "login.html";
     window.location.href = "login.html";
 
+}
+
+function openProfile(){
+    window.location.href = "profile.html";
 }
 
 function devFolio() {

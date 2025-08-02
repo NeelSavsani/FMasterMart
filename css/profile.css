@@ -1,0 +1,188 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+
+:root {
+    --primary: #013937;
+    --primary-dark: #022d2b;
+    --primary-light: #f1fdfc;
+    --accent: #9ef3f1;
+    --black: #000000;
+    --white: #ffffff;
+    --white-transparent: rgba(255, 255, 255, 0.5);
+    --transparent-white-20: rgba(255, 255, 255, 0.2);
+    --transparent-black-70: rgba(0, 0, 0, 0.7);
+    --transparent-black-50: rgba(0, 0, 0, 0.5);
+    --gray-100: #f5f5f5;
+    --gray-200: #f0f0f0;
+    --gray-300: #eeeeee;
+    --gray-400: #c9c9c9;
+    --gray-500: #9e9e9e;
+    --gray-600: #6e6e6e;
+    --gray-700: #4b4b4b;
+    --gray-800: #3c3c3c;
+    --gray-900: #222222;
+    --tabs-back: rgb(243, 244, 246);
+    --tabs-color: #6B7280;
+    --blue-light: #f0f8ff;
+    --blue: #0074cc;
+    --blue-dark: #1e4c73;
+    --red: #e02020;
+    --red-light: #fbeaea;
+    --green: #28a745;
+    --green-light: #e6f4ea;
+    --orange: #ff9f1c;
+    --orange-light: #fff7ed;
+    --yellow: #facc15;
+    --yellow-light: #fef9c3;
+    --purple: #6b5b95;
+    --purplee: #5b21b6;
+    --purplee-light: #9361ea;
+    --pink: #ff69b4;
+    --category-light-mode: #27272a;
+    --bg-light: #ffffff;
+    --bg-dark: #07080A;
+    --border-color: #dfeaff;
+    --border-dark: #3c3c3c;
+    --button-secondary-hover-bg: #f0f0f0;
+    --footer-light-bg: ##f3f4f6;
+}
+
+.container {
+    max-width: 900px;
+    margin: 20px auto auto auto;
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.tabs {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 10px;
+    width: 50%;
+    margin: auto;
+    border-radius: 10px;
+    padding-top: 0;
+    height: 50px;
+    background: var(--tabs-back);
+}
+
+.tab {
+    margin-top: 0;
+    color: var(--tabs-color);
+    font-family: "Poppins", sans-serif;
+    font-weight: 600;
+    width: 50%;
+    background: transparent;
+}
+
+.tab.active {
+    color: black;
+    background: white;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.tab-content h2 {
+    font-family: "Roboto", sans-serif;
+}
+
+.tab-content i {
+    margin-right: 8px;
+    color: red;
+}
+
+form {
+    margin-top: 20px;
+}
+
+.row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 15px;
+}
+
+.field {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+input,
+select {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+button {
+    margin-top: 15px;
+    background: purple;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+#gender {
+    width: 20%;
+}
+
+@media screen and (max-width: 768px) {
+    .container {
+        padding: 15px;
+        width: 95%;
+    }
+
+    .tabs {
+        width: 100%;
+        height: auto;
+        padding: 10px;
+        gap: 10px;
+        box-sizing: border-box;
+    }
+
+    .tab {
+        width: 100%;
+        font-size: 15px;
+        text-align: center;
+        border-radius: 8px;
+    }
+
+    .row {
+        flex-direction: row;
+        gap: 12px;
+    }
+
+    .field {
+        width: 100%;
+    }
+
+    input,
+    select {
+        width: 100%;
+        font-size: 14px;
+        box-sizing: border-box;
+    }
+
+    #gender {
+        width: 100%;
+    }
+
+    button {
+        width: 100%;
+    }
+}

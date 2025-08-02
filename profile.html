@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile - MasterMart</title>
+    <link rel="shortcut icon" href="assets/favicon/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="css/profile.css">
+</head>
+
+<body>
+    <div class="header-wrapper">
+        <header>
+            <nav class="navbar">
+                <div class="logo" onclick="gotoHome()">
+                    <img src="assets/MasterEagle.png" alt="Logo" />
+                    <span>MasterMart</span>
+                </div>
+                <div class="nav-actions">
+                    <button id="searchToggleBtn" title="Search">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                    <div class="cart-wrapper">
+                        <button onclick="gotoCart()" title="Cart">
+                            <i class="fa-solid fa-shopping-cart"></i>
+                            <span id="cartBadge">1</span>
+                        </button>
+                    </div>
+
+                    <button onclick="gotoWishlist()" title="Wishlist"><i class="fa-solid fa-heart"></i></button>
+                    <div class="profile-menu">
+                        <button onclick="toggleDropdown(event)">
+                            <i class="fa-solid fa-user"></i>
+                        </button>
+                        <div class="dropdown" id="profileDropdown">
+                            <button onclick="alert('Orders')"><i class="fa-solid fa-box"></i> Orders</button>
+                            <hr>
+                            <button onclick="toggleTheme()"><i class="fa-solid fa-moon"></i> Light/Dark</button>
+                            <hr>
+                            <button onclick="gotoLogin()" id="login"><i
+                                    class="fa-solid fa-arrow-right-from-bracket"></i> <span
+                                    id="loginMenuItem">LogIn</span></button>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <div class="floating-search" id="floatingSearch">
+            <input type="text" id="searchInput" placeholder="Search products..." />
+            <button id="clearSearchBtn" class="clear-btn"><i class="fa-solid fa-xmark"></i></button>
+            <button id="searchButton"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </div>
+    </div>
+
+
+
+    <main>
+        <div class="container">
+            <!-- <div class="tab-wrapper">
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('personal')">Personal Info</button>
+                    <button class="tab" onclick="switchTab('address')">Address</button>
+                </div>
+            </div> -->
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('personal')">Personal Info</button>
+                <button class="tab" onclick="switchTab('address')">Address</button>
+            </div>
+
+            <div id="personal" class="tab-content active">
+                <h2><i class="fa-solid fa-user"></i> Personal Information</h2>
+                <form id="personalForm">
+                    <div class="row">
+                        <div class="field">
+                            <label>First Name</label>
+                            <input type="text" id="firstName">
+                        </div>
+                        <div class="field">
+                            <label>Last Name</label>
+                            <input type="text" id="lastName">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="field">
+                            <label>Email Address</label>
+                            <input type="email" id="email" disabled>
+                        </div>
+                        <div class="field">
+                            <label>Phone Number</label>
+                            <input type="text" id="phone">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="field">
+                            <label>Gender</label>
+                            <select id="gender">
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit">Save Personal Info</button>
+                </form>
+            </div>
+
+            <div id="address" class="tab-content">
+                <h2><i class="fa-solid fa-map-pin"></i> Shipping Address</h2>
+                <form id="addressForm">
+                    <div class="row">
+                        <div class="field">
+                            <label>Street Address</label>
+                            <input type="text" id="street">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="field">
+                            <label>City</label>
+                            <input type="text" id="city">
+                        </div>
+                        <div class="field">
+                            <label>State</label>
+                            <input type="text" id="state">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="field">
+                            <label>PIN Code</label>
+                            <input type="text" id="pincode">
+                        </div>
+                        <div class="field">
+                            <label>Country</label>
+                            <input type="text" id="country">
+                        </div>
+                    </div>
+                    <button type="submit">Update Address</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+
+
+    <footer class="footer">
+        <p>© <span class="mastereagle" onclick="devFolio()">MasterEagle</span>. All rights reserved. Built with <i
+                class="fas fa-heart"></i></p>
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="js/header.js"></script>
+    <script src="js/profile.js"></script>
+</body>
+
+</html>
