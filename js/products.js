@@ -1,12 +1,16 @@
-// ✅ Load cart from localStorage safely
-try {
-    const storedCart = JSON.parse(localStorage.getItem("cart"));
-    window.cart = Array.isArray(storedCart) ? storedCart : [];
-} catch {
-    window.cart = [];
-}
+// ✅ Initialize Firebase Auth Listener
+firebase.auth().onAuthStateChanged(async (user) => {
+    if (!user) {
+        alert("Please login to continue.");
+        window.location.href = "/register.html";
+        return;
+    }
+    updateCartBadgeFromFirebase();
+    updateWishlistBadgeFromFirebase();
+    await renderProducts();
+});
 
-// ✅ Product list
+// ✅ Product List
 const products = [
     {
         category: "Electronics",
@@ -209,121 +213,154 @@ async function fetchImage(query) {
     }
 }
 
-// ✅ Render all products
+// ✅ Render Products
 async function renderProducts() {
+    console.log("Rendering products...");
     const container = document.getElementById("productList");
     container.innerHTML = "";
 
+    const user = firebase.auth().currentUser;
+    const uid = user?.uid;
+
+    let wishlistSnapshot = null;
+    if (uid) {
+        const wishlistRef = firebase.database().ref(`Wishlist/${uid}`);
+        wishlistSnapshot = await wishlistRef.once("value");
+    }
+
     for (const [index, p] of products.entries()) {
         const imageUrl = await fetchImage(p.name);
+
+        let isWishlisted = false;
+        if (wishlistSnapshot && wishlistSnapshot.exists()) {
+            wishlistSnapshot.forEach(child => {
+                if (child.val().productName === p.name) {
+                    isWishlisted = true;
+                }
+            });
+        }
 
         const card = document.createElement("div");
         card.className = "product-card";
         if (p.outOfStock) card.classList.add("out-of-stock");
 
         card.innerHTML = `
-      ${p.discount ? `<span class="badge">${p.discount}</span>` : ""}
-      <span class="wishlist"><i class="${isInWishlist(p.name) ? 'fa-solid' : 'fa-regular'} fa-heart"></i></span>
-      <div class="image"><img src="${imageUrl}" alt="${p.name}" /></div>
-      <div class="category">${p.category}</div>
-      <h3 class="product-name">${p.name}</h3>
-      <div class="rating">${"★".repeat(p.rating)}<span> (${p.ratingCount})</span></div>
-      <div class="price">₹${p.price.toLocaleString("en-IN")}
-        ${p.oldPrice ? `<span class="old">₹${p.oldPrice.toLocaleString("en-IN")}</span>` : ""}
-      </div>
-      <button class="add-to-cart-btn" ${p.outOfStock ? "disabled" : ""} data-id="${index}">
-        ${p.outOfStock ? "Out of Stock" : `<i class="fa-solid fa-cart-shopping"></i> &nbsp; Add to Cart`}
-      </button>
-    `;
+            ${p.discount ? `<span class="badge">${p.discount}</span>` : ""}
+            <span class="wishlist"><i class="${isWishlisted ? 'fa-solid' : 'fa-regular'} fa-heart"></i></span>
+            <div class="image"><img src="${imageUrl}" alt="${p.name}" /></div>
+            <div class="category">${p.category}</div>
+            <h3 class="product-name">${p.name}</h3>
+            <div class="rating">${"★".repeat(p.rating)}<span> (${p.ratingCount})</span></div>
+            <div class="price">₹${p.price.toLocaleString("en-IN")}
+                ${p.oldPrice ? `<span class="old">₹${p.oldPrice.toLocaleString("en-IN")}</span>` : ""}
+            </div>
+            <button class="add-to-cart-btn" ${p.outOfStock ? "disabled" : ""} data-id="${index}">
+                ${p.outOfStock ? "Out of Stock" : `<i class="fa-solid fa-cart-shopping"></i> &nbsp; Add to Cart`}
+            </button>
+        `;
 
-        // Toggle wishlist
         card.querySelector(".wishlist i").addEventListener("click", async (e) => {
             e.preventDefault();
             e.stopPropagation();
 
-            const user = await firebase.auth().currentUser;
-            if (!user) {
-                alert("Please login first to use wishlist.");
-                window.location.href = "/register.html";
-                return;
+            const wishlistRef = firebase.database().ref(`Wishlist/${uid}`);
+            const userSnapshot = await firebase.database().ref(`users/${uid}`).once("value");
+            const userData = userSnapshot.val();
+            const existingSnapshot = await wishlistRef.orderByChild("productName").equalTo(p.name).once("value");
+
+            if (existingSnapshot.exists()) {
+                const key = Object.keys(existingSnapshot.val())[0];
+                await wishlistRef.child(key).remove();
+                e.target.classList.remove("fa-solid");
+                e.target.classList.add("fa-regular");
+                alert("Removed from wishlist");
+            } else {
+                await wishlistRef.push({
+                    productId: Date.now().toString(),
+                    customerFullname: userData?.full_name || "Unknown",
+                    customerEmail: user.email,
+                    productCategory: p.category,
+                    productName: p.name,
+                    productPrice: p.price,
+                    quantity: 1,
+                    addedAt: new Date().toISOString()
+                });
+                e.target.classList.remove("fa-regular");
+                e.target.classList.add("fa-solid");
+                alert("Added to wishlist");
             }
 
-            e.target.classList.toggle("fa-regular");
-            e.target.classList.toggle("fa-solid");
-            updateWishlist(p.name);
+            updateWishlistBadgeFromFirebase();
         });
 
-        // Add to cart
         card.querySelector(".add-to-cart-btn").addEventListener("click", async () => {
-            const user = await firebase.auth().currentUser;
-            if (!user) {
-                alert("Please login first to add items to cart.");
-                window.location.href = "/register.html";
-                return;
+            const cartRef = firebase.database().ref(`Cart/${uid}`);
+            const cartId = Date.now().toString();
+
+            const userSnapshot = await firebase.database().ref(`users/${uid}`).once("value");
+            const userData = userSnapshot.val();
+
+            const cartItem = {
+                cartId,
+                productName: p.name,
+                productCategory: p.category,
+                productPrice: p.price,
+                customerFullName: userData?.full_name || "Unknown",
+                customerEmail: user.email,
+                qty: 1,
+                cartedAt: new Date().toISOString()
+            };
+
+            const snapshot = await cartRef.orderByChild("productName").equalTo(p.name).once("value");
+
+            if (snapshot.exists()) {
+                const key = Object.keys(snapshot.val())[0];
+                const existingItem = snapshot.val()[key];
+                const newQty = (existingItem.qty || 1) + 1;
+                await cartRef.child(key).update({ qty: newQty });
+            } else {
+                await cartRef.child(cartId).set(cartItem);
             }
 
-            const existing = window.cart.find(item => item.name === p.name);
-            if (existing) {
-                existing.qty += 1;
-            } else {
-                window.cart.push({
-                    id: Date.now(),
-                    name: p.name,
-                    category: p.category,
-                    price: p.price,
-                    originalPrice: p.oldPrice || p.price,
-                    qty: 1,
-                    image: imageUrl
-                });
+            const wishlistSnapshot = await firebase.database().ref(`Wishlist/${uid}`).orderByChild("productName").equalTo(p.name).once("value");
+            if (wishlistSnapshot.exists()) {
+                const key = Object.keys(wishlistSnapshot.val())[0];
+                await firebase.database().ref(`Wishlist/${uid}/${key}`).remove();
+                updateWishlistBadgeFromFirebase();
             }
-            localStorage.setItem("cart", JSON.stringify(window.cart));
-            updateCartBadge(window.cart.reduce((sum, p) => sum + p.qty, 0));
+
+            alert("Item added to cart");
+            updateCartBadgeFromFirebase();
         });
 
         container.appendChild(card);
     }
 }
 
-// ✅ Update badge
-function updateCartBadge(count) {
-    const badge = document.getElementById("cartBadge");
-    if (!badge) return;
-    if (count > 0) {
-        badge.textContent = count;
-        badge.style.display = "inline-block";
-    } else {
-        badge.style.display = "none";
-    }
+// ✅ Badge Functions
+function updateCartBadgeFromFirebase() {
+    const user = firebase.auth().currentUser;
+    if (!user) return;
+    firebase.database().ref(`Cart/${user.uid}`).once("value").then(snapshot => {
+        let count = 0;
+        snapshot.forEach(child => {
+            count += child.val()?.qty || 1;
+        });
+        const badge = document.getElementById("cartBadge");
+        if (!badge) return;
+        badge.textContent = count > 0 ? count : "";
+        badge.style.display = count > 0 ? "inline-block" : "none";
+    });
 }
 
-// ✅ On DOM Ready
-document.addEventListener("DOMContentLoaded", () => {
-    const count = window.cart.reduce((sum, p) => sum + p.qty, 0);
-    updateCartBadge(count);
-    renderProducts();
-});
-
-
-// Initialize cart and wishlist from localStorage
-window.cart = JSON.parse(localStorage.getItem("cart") || "[]");
-window.wishlist = JSON.parse(localStorage.getItem("wishlist") || "[]");
-
-
-function updateWishlist(name) {
-    const exists = window.wishlist.find(p => p.name === name);
-    if (exists) {
-        window.wishlist = window.wishlist.filter(p => p.name !== name);
-    } else {
-        const product = products.find(p => p.name === name);
-        if (product) {
-            window.wishlist.push(product);
-        }
-    }
-    localStorage.setItem("wishlist", JSON.stringify(window.wishlist));
-    renderProducts(); // re-render UI
-}
-
-
-function isInWishlist(name) {
-    return window.wishlist.some(p => p.name === name);
+function updateWishlistBadgeFromFirebase() {
+    const user = firebase.auth().currentUser;
+    if (!user) return;
+    firebase.database().ref(`Wishlist/${user.uid}`).once("value").then(snapshot => {
+        let count = snapshot.numChildren();
+        const badge = document.getElementById("wishlistBadge");
+        if (!badge) return;
+        badge.textContent = count > 0 ? count : "";
+        badge.style.display = count > 0 ? "inline-block" : "none";
+    });
 }

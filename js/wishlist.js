@@ -1,6 +1,17 @@
 const UNSPLASH_ACCESS_KEY = "_HM4vCxWz8KfJ5FbjpHEMhz-prB93VqI1d-46K3sCsk";
 
-// ✅ Helper to fetch image from Unsplash
+document.addEventListener("DOMContentLoaded", () => {
+    firebase.auth().onAuthStateChanged((user) => {
+        if (!user) {
+            alert("Please login to view your wishlist.");
+            window.location.href = "/register.html";
+            return;
+        }
+
+        loadWishlist(user);
+    });
+});
+
 async function fetchImage(query) {
     const endpoint = `https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&orientation=squarish&per_page=1&client_id=${UNSPLASH_ACCESS_KEY}`;
     try {
@@ -13,130 +24,167 @@ async function fetchImage(query) {
     }
 }
 
-firebase.auth().onAuthStateChanged(function (user) {
-    if (!user) {
-        alert("Please login first to access this page.");
-        window.location.href = "/register.html"; // or "/login.html"
-    } else {
-        // user is logged in, allow page logic to proceed
-        document.dispatchEvent(new Event("auth-ready"));
-    }
-});
+function loadWishlist(user) {
+    const uid = user.uid;
+    const wishlistRef = firebase.database().ref(`Wishlist/${uid}`);
+    const wishlistContainer = document.getElementById("wishlist-list");
 
-// ✅ Load and render wishlist when page loads
-document.addEventListener('DOMContentLoaded', () => {
-    const wishlist = JSON.parse(localStorage.getItem("wishlist") || "[]");
-    const container = document.getElementById('wishlist-list');
+    wishlistRef.once("value")
+        .then(snapshot => {
+            wishlistContainer.innerHTML = "";
 
-    // ✅ Render wishlist items
-    function renderWishlist() {
-        container.innerHTML = '';
-        if (wishlist.length === 0) {
-            container.innerHTML = '<p>Your wishlist is empty <i class="fa-solid fa-heart-crack"></i></p>';
-            return;
-        }
+            if (!snapshot.exists()) {
+                wishlistContainer.innerHTML = "<p style='text-align:center;'>Your wishlist is empty.</p>";
+                return;
+            }
 
-        wishlist.forEach(async (p, index) => {
-            const card = document.createElement('div');
-            const imageUrl = await fetchImage(p.name);
-            card.className = 'product-card';
-            if (p.outOfStock) card.classList.add("out-of-stock");
+            snapshot.forEach(async childSnapshot => {
+                const item = childSnapshot.val();
+                const key = childSnapshot.key;
 
-            card.innerHTML = `
-            ${p.discount ? `<span class="badge">${p.discount}</span>` : ""}
-            <button class="wishlist-btn remove-wishlist" data-index="${index}">
-                <i class="fa-solid fa-trash"></i>
-            </button>
-            <div class="image"><img src="${imageUrl}" alt="${p.name}" /></div>
-            <div class="category">${p.category}</div>
-            <h3>${p.name}</h3>
-            <div class="rating">${"★".repeat(p.rating)}<span> (${p.ratingCount})</span></div>
-            <div class="price">₹${p.price.toLocaleString("en-IN")}
-                ${p.oldPrice ? `<span class="old">₹${p.oldPrice.toLocaleString("en-IN")}</span>` : ""}
-            </div>
-            <div class="card-footer">
-                <button class="add-to-cart-btn" ${p.outOfStock ? "disabled" : ""}>
-                    <i class="fa-solid fa-cart-shopping"></i> Add to Cart
-                </button>
-                <button class="wishlist-toggle" data-name="${p.name}">
-                    <i class="fa-solid fa-heart"></i>
-                </button>
-            </div>
-        `;
+                const imageUrl = await fetchImage(item.productName); // fetch Unsplash image
 
-            // Handle add to cart
-            card.querySelector(".add-to-cart-btn").addEventListener("click", () => {
-                addToCart(p, imageUrl);
+                const card = document.createElement("div");
+                card.className = "product-card";
 
-                // ✅ Remove from wishlist
-                const idx = wishlist.findIndex(item => item.name === p.name);
-                if (idx !== -1) {
-                    wishlist.splice(idx, 1);
-                    localStorage.setItem("wishlist", JSON.stringify(wishlist));
-                    renderWishlist(); // ✅ Re-render wishlist UI
-                }
+                card.innerHTML = `
+                    ${item.discount ? `<span class="badge">${item.discount}</span>` : ""}
+                    <button class="wishlist-btn remove-wishlist" onclick="removeFromWishlist('${key}')">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                    <div class="image"><img src="${imageUrl}" alt="${item.productName}" /></div>
+                    <div class="category">${item.productCategory}</div>
+                    <h3>${item.productName}</h3>
+                    <div class="product-price">₹${item.productPrice.toLocaleString("en-IN")}</div>
+                    <div class="card-footer">
+                        <button class="add-to-cart-btn" onclick="addToCartFromWishlist('${key}', ${item.productPrice}, '${escapeQuotes(item.productName)}', '${escapeQuotes(item.productCategory)}')">
+                            <i class="fa-solid fa-cart-shopping"></i> Add to Cart
+                        </button>
+                    </div>
+                `;
 
-                // ✅ Show alert
-                alert(`${p.name} has been added to your cart.`);
+                wishlistContainer.appendChild(card);
             });
 
-
-
-            // Handle trash icon
-            card.querySelector(".remove-wishlist").addEventListener("click", () => {
-                wishlist.splice(index, 1);
-                localStorage.setItem("wishlist", JSON.stringify(wishlist));
-                renderWishlist();
-            });
-
-            // Handle heart icon toggle (remove from wishlist)
-            card.querySelector(".wishlist-toggle").addEventListener("click", () => {
-                const idx = wishlist.findIndex(item => item.name === p.name);
-                if (idx !== -1) {
-                    wishlist.splice(idx, 1);
-                    localStorage.setItem("wishlist", JSON.stringify(wishlist));
-                    renderWishlist(); // Re-render to reflect removal
-                }
-            });
-
-
-            container.appendChild(card);
+        })
+        .catch(error => {
+            console.error("Error fetching wishlist:", error);
+            wishlistContainer.innerHTML = "<p style='text-align:center;'>Error loading wishlist.</p>";
         });
+}
+
+function removeFromWishlist(wishlistId) {
+    const user = firebase.auth().currentUser;
+    if (!user) return;
+
+    const uid = user.uid;
+    firebase.database().ref(`Wishlist/${uid}/${wishlistId}`).remove()
+        .then(() => {
+            alert("Removed from wishlist");
+            location.reload();
+        })
+        .catch(err => {
+            console.error("Error removing from wishlist:", err);
+            alert("Failed to remove from wishlist.");
+        });
+}
+
+function addToCartFromWishlist(wishlistId, price, name, category) {
+    const user = firebase.auth().currentUser;
+    if (!user) {
+        alert("Login required");
+        return;
     }
 
+    const uid = user.uid;
+    const cartRef = firebase.database().ref(`Cart/${uid}`);
+    const wishlistRef = firebase.database().ref(`Wishlist/${uid}/${wishlistId}`);
+    const cartId = Date.now().toString();
 
+    firebase.database().ref(`users/${uid}`).once("value").then(userSnapshot => {
+        const userData = userSnapshot.val();
 
-    // ✅ Add item to cart
-    function addToCart(product, imageUrl) {
-        let cart = JSON.parse(localStorage.getItem("cart") || "[]");
-        const existing = cart.find(p => p.name === product.name);
-        if (existing) {
-            existing.qty += 1;
-        } else {
-            cart.push({
-                id: Date.now(), // ✅ Ensure unique ID is assigned
-                name: product.name,
-                category: product.category,
-                price: product.price,
-                originalPrice: product.oldPrice || product.price,
-                qty: 1,
-                image: imageUrl
+        const cartItem = {
+            cartId: cartId,
+            productName: name,
+            productCategory: category,
+            productPrice: price,
+            customerFullName: userData?.full_name || "Unknown",
+            customerEmail: user.email,
+            qty: 1,
+            cartedAt: new Date().toISOString()
+        };
+
+        // Add to cart
+        cartRef.push(cartItem).then(() => {
+            // ✅ Remove from wishlist after adding to cart
+            wishlistRef.remove().then(() => {
+                alert("Item moved to cart");
+                location.reload(); // refresh wishlist
             });
-        }
-        localStorage.setItem("cart", JSON.stringify(cart));
-    }
+        });
+    }).catch(err => {
+        console.error("Failed to fetch user data:", err);
+        alert("Failed to add item to cart.");
+    });
+}
 
 
-    // ✅ Add all wishlist items to cart
-    window.addAllToCart = async () => {
-        for (const product of wishlist) {
-            const imageUrl = await fetchImage(product.name);
-            addToCart(product, imageUrl);
-        }
-        localStorage.setItem("wishlist", "[]");
-        alert("All wishlist items have been added to cart!");
-        window.location.reload();
-    }
+function addAllToCart() {
+    const user = firebase.auth().currentUser;
+    if (!user) return;
 
-    renderWishlist();
-});
+    const uid = user.uid;
+    const wishlistRef = firebase.database().ref(`Wishlist/${uid}`);
+    const cartRef = firebase.database().ref(`Cart/${uid}`);
+
+    firebase.database().ref(`users/${uid}`).once("value").then(userSnapshot => {
+        const userData = userSnapshot.val();
+
+        wishlistRef.once("value").then(snapshot => {
+            if (!snapshot.exists()) {
+                alert("Wishlist is empty");
+                return;
+            }
+
+            const promises = [];
+
+            snapshot.forEach(child => {
+                const key = child.key;
+                const item = child.val();
+
+                const cartItem = {
+                    cartId: Date.now().toString() + Math.floor(Math.random() * 1000),
+                    productName: item.productName,
+                    productCategory: item.productCategory,
+                    productPrice: item.productPrice,
+                    customerFullName: userData?.full_name || "Unknown",
+                    customerEmail: user.email,
+                    qty: 1,
+                    cartedAt: new Date().toISOString()
+                };
+
+                // Add to cart and remove from wishlist
+                const cartPush = cartRef.push(cartItem);
+                const wishlistRemove = firebase.database().ref(`Wishlist/${uid}/${key}`).remove();
+
+                promises.push(cartPush, wishlistRemove);
+            });
+
+            Promise.all(promises)
+                .then(() => {
+                    alert("All items moved to cart");
+                    location.reload();
+                })
+                .catch(err => {
+                    console.error("Error moving all items:", err);
+                    alert("Some items may not have been moved.");
+                });
+        });
+    });
+}
+
+
+function escapeQuotes(str) {
+    return str.replace(/'/g, "\\'").replace(/"/g, '\\"');
+}

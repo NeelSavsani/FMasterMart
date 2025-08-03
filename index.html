@@ -31,7 +31,13 @@
                         </button>
                     </div>
 
-                    <button onclick="gotoWishlist()" title="Wishlist"><i class="fa-solid fa-heart"></i></button>
+                    <div class="wishlist-wrapper">
+                        <button onclick="gotoWishlist()" title="Wishlist">
+                            <i class="fa-solid fa-heart"></i>
+                            <span id="wishlistBadge"></span>
+                        </button>
+                    </div>
+
                     <div class="profile-menu">
                         <button onclick="toggleDropdown(event)">
                             <i class="fa-solid fa-user"></i>
@@ -75,8 +81,6 @@
                 class="fas fa-heart"></i></p>
     </footer>
 
-    <script src="js/header.js"></script>
-    <script src="js/products.js"></script>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
@@ -95,6 +99,8 @@
         firebase.initializeApp(firebaseConfig);
     </script>
     <script src="js/auth.js"></script>
+    <script src="js/header.js"></script>
+    <script src="js/products.js"></script>
 
 
 </body>

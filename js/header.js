@@ -52,6 +52,24 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    function updateWishlistBadgeFromFirebase() {
+        const user = firebase.auth().currentUser;
+        if (!user) return;
+
+        const wishlistRef = firebase.database().ref(`Wishlist/${user.uid}`);
+        wishlistRef.once("value").then(snapshot => {
+            let count = 0;
+            snapshot.forEach(() => count++);
+
+            const badge = document.getElementById("wishlistBadge");
+            if (!badge) return;
+
+            badge.textContent = count > 0 ? count : "";
+            badge.style.display = count > 0 ? "inline-block" : "none";
+        });
+    }
+
+
     //Search filtering
     searchInput.addEventListener("keyup", function () {
         const query = this.value.toLowerCase();
@@ -149,7 +167,7 @@ function gotoLogin() {
     window.location.href = "login.html"
 }
 
-function openProfile(){
+function openProfile() {
     window.location.href = "profile.html";
 }
 
