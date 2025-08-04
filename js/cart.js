@@ -13,6 +13,9 @@ async function fetchImage(query) {
 }
 
 firebase.auth().onAuthStateChanged(function (user) {
+    updateWishlistBadgeFromFirebase();
+
+    renderCart(user);
     if (!user) {
         alert("Please login first to access this page.");
         window.location.href = "/register.html";
@@ -20,6 +23,7 @@ firebase.auth().onAuthStateChanged(function (user) {
         document.dispatchEvent(new CustomEvent("auth-ready", { detail: { user } }));
     }
 });
+
 
 async function renderCart(user) {
     const uid = user.uid;
@@ -92,13 +96,6 @@ async function renderCart(user) {
     updateCartBadge(totalQty);
 }
 
-function updateCartBadge(count) {
-    const badge = document.getElementById("cartBadge");
-    if (!badge) return;
-    badge.textContent = count > 0 ? count : "";
-    badge.style.display = count > 0 ? "inline-block" : "none";
-}
-
 document.addEventListener("auth-ready", (e) => {
     const user = e.detail.user;
     renderCart(user);
@@ -142,5 +139,3 @@ document.addEventListener("auth-ready", (e) => {
         history.back();
     });
 });
-
-// Initial render is handled in "auth-ready"

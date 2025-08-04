@@ -273,7 +273,8 @@ async function renderProducts() {
                 await wishlistRef.child(key).remove();
                 e.target.classList.remove("fa-solid");
                 e.target.classList.add("fa-regular");
-                alert("Removed from wishlist");
+                // alert("Removed from wishlist");
+                showToast(`${p.name} removed from wishlist`);
             } else {
                 await wishlistRef.push({
                     productId: Date.now().toString(),
@@ -287,7 +288,8 @@ async function renderProducts() {
                 });
                 e.target.classList.remove("fa-regular");
                 e.target.classList.add("fa-solid");
-                alert("Added to wishlist");
+                // alert("Added to wishlist");
+                showToast(`${p.name} added to wishlist`);
             }
 
             updateWishlistBadgeFromFirebase();
@@ -329,38 +331,11 @@ async function renderProducts() {
                 updateWishlistBadgeFromFirebase();
             }
 
-            alert("Item added to cart");
+            // alert("Item added to cart");
+            showToast(`${p.name} added to cart`);
             updateCartBadgeFromFirebase();
         });
 
         container.appendChild(card);
     }
-}
-
-// ✅ Badge Functions
-function updateCartBadgeFromFirebase() {
-    const user = firebase.auth().currentUser;
-    if (!user) return;
-    firebase.database().ref(`Cart/${user.uid}`).once("value").then(snapshot => {
-        let count = 0;
-        snapshot.forEach(child => {
-            count += child.val()?.qty || 1;
-        });
-        const badge = document.getElementById("cartBadge");
-        if (!badge) return;
-        badge.textContent = count > 0 ? count : "";
-        badge.style.display = count > 0 ? "inline-block" : "none";
-    });
-}
-
-function updateWishlistBadgeFromFirebase() {
-    const user = firebase.auth().currentUser;
-    if (!user) return;
-    firebase.database().ref(`Wishlist/${user.uid}`).once("value").then(snapshot => {
-        let count = snapshot.numChildren();
-        const badge = document.getElementById("wishlistBadge");
-        if (!badge) return;
-        badge.textContent = count > 0 ? count : "";
-        badge.style.display = count > 0 ? "inline-block" : "none";
-    });
 }

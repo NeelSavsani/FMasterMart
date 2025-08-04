@@ -19,6 +19,9 @@ document.addEventListener("DOMContentLoaded", () => {
         adjustCardWidthOnSearch(); // re-apply layout rules
     });
 
+    updateWishlistBadgeFromFirebase();
+    updateCartBadgeFromFirebase();
+
     if (searchToggleBtn && floatingSearch && profileDropdown) {
         searchToggleBtn.addEventListener("click", () => {
             profileDropdown.classList.remove("show");
@@ -51,24 +54,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }
-
-    function updateWishlistBadgeFromFirebase() {
-        const user = firebase.auth().currentUser;
-        if (!user) return;
-
-        const wishlistRef = firebase.database().ref(`Wishlist/${user.uid}`);
-        wishlistRef.once("value").then(snapshot => {
-            let count = 0;
-            snapshot.forEach(() => count++);
-
-            const badge = document.getElementById("wishlistBadge");
-            if (!badge) return;
-
-            badge.textContent = count > 0 ? count : "";
-            badge.style.display = count > 0 ? "inline-block" : "none";
-        });
-    }
-
 
     //Search filtering
     searchInput.addEventListener("keyup", function () {
@@ -175,14 +160,6 @@ function devFolio() {
     window.open('https://neelsavsani.vercel.app', '_blank');
 }
 
-function updateCartBadge(count) {
-    const badge = document.getElementById("cartBadge");
-    if (!badge) return;
-
-    badge.textContent = count > 0 ? count : "";
-    badge.style.display = count > 0 ? "inline-block" : "none";
-}
-
 function adjustCardWidthOnSearch() {
     const productCards = Array.from(document.querySelectorAll(".product-card")).filter(c => c.style.display !== "none");
     const productList = document.querySelector(".product-list");
@@ -203,4 +180,3 @@ function adjustCardWidthOnSearch() {
         });
     }
 }
-

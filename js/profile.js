@@ -1,4 +1,6 @@
 firebase.auth().onAuthStateChanged(user => {
+    updateWishlistBadgeFromFirebase();
+    updateCartBadgeFromFirebase();
     if (!user) {
         alert("Please login first.");
         window.location.href = "login.html";
@@ -44,7 +46,7 @@ firebase.auth().onAuthStateChanged(user => {
             last_name: lastName,
             phone: phone,
             gender: gender
-        }).then(() => alert("Personal info updated."));
+        }).then(() => showToast("Personal info updated."));
     });
 
     // Validate and Save Address Info
@@ -68,7 +70,7 @@ firebase.auth().onAuthStateChanged(user => {
             state: state,
             pincode: pincode,
             country: country
-        }).then(() => alert("Address updated."));
+        }).then(() => showToast("Address updated."));
     });
 });
 

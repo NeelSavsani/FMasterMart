@@ -2,6 +2,8 @@ const UNSPLASH_ACCESS_KEY = "_HM4vCxWz8KfJ5FbjpHEMhz-prB93VqI1d-46K3sCsk";
 
 document.addEventListener("DOMContentLoaded", () => {
     firebase.auth().onAuthStateChanged((user) => {
+        updateWishlistBadgeFromFirebase();
+        updateCartBadgeFromFirebase();
         if (!user) {
             alert("Please login to view your wishlist.");
             window.location.href = "/register.html";
@@ -24,54 +26,59 @@ async function fetchImage(query) {
     }
 }
 
-function loadWishlist(user) {
+async function loadWishlist(user) {
     const uid = user.uid;
     const wishlistRef = firebase.database().ref(`Wishlist/${uid}`);
     const wishlistContainer = document.getElementById("wishlist-list");
 
-    wishlistRef.once("value")
-        .then(snapshot => {
-            wishlistContainer.innerHTML = "";
+    try {
+        const snapshot = await wishlistRef.once("value");
+        wishlistContainer.innerHTML = "";
 
-            if (!snapshot.exists()) {
-                wishlistContainer.innerHTML = "<p style='text-align:center;'>Your wishlist is empty.</p>";
-                return;
-            }
+        if (!snapshot.exists()) {
+            wishlistContainer.innerHTML = "<p style='text-align:center;'>Your wishlist is empty.</p>";
+            return;
+        }
 
-            snapshot.forEach(async childSnapshot => {
-                const item = childSnapshot.val();
-                const key = childSnapshot.key;
+        const promises = [];
 
-                const imageUrl = await fetchImage(item.productName); // fetch Unsplash image
+        snapshot.forEach(childSnapshot => {
+            const item = childSnapshot.val();
+            const key = childSnapshot.key;
 
-                const card = document.createElement("div");
-                card.className = "product-card";
+            promises.push(
+                fetchImage(item.productName).then(imageUrl => {
+                    const card = document.createElement("div");
+                    card.className = "product-card";
 
-                card.innerHTML = `
-                    ${item.discount ? `<span class="badge">${item.discount}</span>` : ""}
-                    <button class="wishlist-btn remove-wishlist" onclick="removeFromWishlist('${key}')">
-                        <i class="fa-solid fa-trash"></i>
-                    </button>
-                    <div class="image"><img src="${imageUrl}" alt="${item.productName}" /></div>
-                    <div class="category">${item.productCategory}</div>
-                    <h3>${item.productName}</h3>
-                    <div class="product-price">₹${item.productPrice.toLocaleString("en-IN")}</div>
-                    <div class="card-footer">
-                        <button class="add-to-cart-btn" onclick="addToCartFromWishlist('${key}', ${item.productPrice}, '${escapeQuotes(item.productName)}', '${escapeQuotes(item.productCategory)}')">
-                            <i class="fa-solid fa-cart-shopping"></i> Add to Cart
+                    card.innerHTML = `
+                        ${item.discount ? `<span class="badge">${item.discount}</span>` : ""}
+                        <button class="wishlist-btn remove-wishlist" onclick="removeFromWishlist('${key}')">
+                            <i class="fa-solid fa-trash"></i>
                         </button>
-                    </div>
-                `;
+                        <div class="image"><img src="${imageUrl}" alt="${item.productName}" /></div>
+                        <div class="category">${item.productCategory}</div>
+                        <h3>${item.productName}</h3>
+                        <div class="product-price">₹${item.productPrice.toLocaleString("en-IN")}</div>
+                        <div class="card-footer">
+                            <button class="add-to-cart-btn" onclick="addToCartFromWishlist('${key}', ${item.productPrice}, '${escapeQuotes(item.productName)}', '${escapeQuotes(item.productCategory)}')">
+                                <i class="fa-solid fa-cart-shopping"></i> Add to Cart
+                            </button>
+                        </div>
+                    `;
 
-                wishlistContainer.appendChild(card);
-            });
-
-        })
-        .catch(error => {
-            console.error("Error fetching wishlist:", error);
-            wishlistContainer.innerHTML = "<p style='text-align:center;'>Error loading wishlist.</p>";
+                    wishlistContainer.appendChild(card);
+                })
+            );
         });
+
+        await Promise.all(promises);
+    } catch (error) {
+        console.error("Error fetching wishlist:", error);
+        wishlistContainer.innerHTML = "<p style='text-align:center;'>Error loading wishlist.</p>";
+    }
 }
+
 
 function removeFromWishlist(wishlistId) {
     const user = firebase.auth().currentUser;
@@ -80,12 +87,12 @@ function removeFromWishlist(wishlistId) {
     const uid = user.uid;
     firebase.database().ref(`Wishlist/${uid}/${wishlistId}`).remove()
         .then(() => {
-            alert("Removed from wishlist");
+            showToast("Removed from wishlist");
             location.reload();
         })
         .catch(err => {
             console.error("Error removing from wishlist:", err);
-            alert("Failed to remove from wishlist.");
+            showToast("Failed to remove from wishlist.");
         });
 }
 
@@ -119,7 +126,7 @@ function addToCartFromWishlist(wishlistId, price, name, category) {
         cartRef.push(cartItem).then(() => {
             // ✅ Remove from wishlist after adding to cart
             wishlistRef.remove().then(() => {
-                alert("Item moved to cart");
+                showToast("Item moved to cart");
                 location.reload(); // refresh wishlist
             });
         });
@@ -173,7 +180,7 @@ function addAllToCart() {
 
             Promise.all(promises)
                 .then(() => {
-                    alert("All items moved to cart");
+                    showToast("All items moved to cart");
                     location.reload();
                 })
                 .catch(err => {

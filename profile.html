@@ -31,12 +31,19 @@
                         </button>
                     </div>
 
-                    <button onclick="gotoWishlist()" title="Wishlist"><i class="fa-solid fa-heart"></i></button>
+                    <div class="wishlist-wrapper">
+                        <button onclick="gotoWishlist()" title="Wishlist">
+                            <i class="fa-solid fa-heart"></i>
+                            <span id="wishlistBadge"></span>
+                        </button>
+                    </div>
+
                     <div class="profile-menu">
                         <button onclick="toggleDropdown(event)">
                             <i class="fa-solid fa-user"></i>
                         </button>
                         <div class="dropdown" id="profileDropdown">
+                            <div id="name" style="text-align: center; background: #ccc; border-radius: 5px;"></div>
                             <button onclick="alert('Orders')"><i class="fa-solid fa-box"></i> Orders</button>
                             <hr>
                             <button onclick="toggleTheme()"><i class="fa-solid fa-moon"></i> Light/Dark</button>
@@ -145,6 +152,54 @@
                 class="fas fa-heart"></i></p>
     </footer>
 
+    <div id="toastContainer"></div>
+    <style>
+        #toastContainer {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 9999;
+        }
+
+        .toast {
+            display: flex;
+            align-items: center;
+            background: #fff;
+            color: green;
+            padding: 10px 16px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            margin-top: 12px;
+            font-size: 14px;
+            min-width: 260px;
+            animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.7s;
+        }
+
+        .toast i {
+            color: #111;
+            margin-right: 10px;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+        }
+    </style>
+
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -162,6 +217,7 @@
 
         firebase.initializeApp(firebaseConfig);
     </script>
+    <script src="js/common.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/profile.js"></script>
 </body>

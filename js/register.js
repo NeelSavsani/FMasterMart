@@ -94,22 +94,3 @@ document.querySelectorAll(".toggle-password").forEach((toggle) => {
         }
     });
 });
-
-
-// Toggle password visibility
-document.querySelectorAll(".toggle-password").forEach((toggle) => {
-    toggle.addEventListener("click", function () {
-        const inputId = this.getAttribute("toggle");
-        const input = document.querySelector(inputId);
-
-        if (input.type === "password") {
-            input.type = "text";
-            this.querySelector("i").classList.remove("fa-eye");
-            this.querySelector("i").classList.add("fa-eye-slash");
-        } else {
-            input.type = "password";
-            this.querySelector("i").classList.remove("fa-eye-slash");
-            this.querySelector("i").classList.add("fa-eye");
-        }
-    });
-});

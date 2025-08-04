@@ -272,6 +272,7 @@ body.dark-mode {
 }
 
 .product-list:has(.product-card:only-child) .product-card {
-    max-width: 350px; /* Adjust as needed */
+    max-width: 350px;
+    /* Adjust as needed */
     width: 100%;
 }
