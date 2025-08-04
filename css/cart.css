@@ -133,15 +133,15 @@ body {
 }
 
 .item-image {
-    width: 60px;
-    height: 60px;
+    width: 90px;
+    height: 90px;
     background: #ddd;
     border-radius: 5px;
 }
 
-.item-image img{
-    height: 60px;
-    width: 60px;
+.item-image img {
+    height: 90px;
+    width: 90px;
     border-radius: 10px;
 }
 
@@ -189,7 +189,9 @@ body {
 
 .qty-minus,
 .qty-plus {
-    padding: 4px 10px;
+    padding: 5px 11px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
     font-size: 18px;
     margin: 2px;
 }
@@ -200,7 +202,9 @@ body {
 }
 
 .remove-item {
-    background: none;
+    background: black;
+    padding: 5px 7px;
+    border-radius: 5px;
     border: none;
     color: #f44336;
     cursor: pointer;
