@@ -14,8 +14,6 @@ async function fetchImage(query) {
 
 firebase.auth().onAuthStateChanged(function (user) {
     updateWishlistBadgeFromFirebase();
-
-    renderCart(user);
     if (!user) {
         alert("Please login first to access this page.");
         window.location.href = "/register.html";
@@ -94,6 +92,8 @@ async function renderCart(user) {
     document.getElementById("summaryAmount").textContent = `₹${totalAmount.toFixed(2)}`;
     document.getElementById("grandTotal").textContent = `₹${totalAmount.toFixed(2)}`;
     updateCartBadge(totalQty);
+    console.log("Cart rendered with items:", cartData);
+    console.log("Total items in cart:", totalQty);
 }
 
 document.addEventListener("auth-ready", (e) => {
