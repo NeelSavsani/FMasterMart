@@ -144,6 +144,40 @@
                         <button type="submit" class="btn-primary">Continue to Payment</button>
                     </form>
                 </div>
+                <div class="payment-section" style="display: none;">
+                    <h2><span class="icon"><i class="fa-solid fa-credit-card"></i></span> Payment Method</h2>
+
+                    <form id="paymentForm">
+                        <div class="form-group">
+                            <label><input type="radio" name="payment-method" value="card" checked /> Credit/Debit Card</label>
+                            <label><input type="radio" name="payment-method" value="upi" /> UPI</label>
+                            <label><input type="radio" name="payment-method" value="cod" /> Cash on Delivery</label>
+                        </div>
+
+                        <div id="card-details" class="payment-details">
+                            <input type="text" placeholder="Card Number" maxlength="19" required />
+                            <input type="text" placeholder="MM/YY" maxlength="5" required />
+                            <input type="text" placeholder="CVV" maxlength="3" required />
+                            <input type="text" placeholder="Name on Card" required />
+                        </div>
+
+                        <div id="upi-details" class="payment-details" style="display: none;">
+                            <input type="text" placeholder="UPI ID (e.g., yourname@paytm)" required />
+                        </div>
+
+                        <div id="cod-details" class="payment-details" style="display: none;">
+                            <p>Cash on Delivery selected. You’ll pay at the time of delivery.</p>
+                        </div>
+
+                        <!-- Back & Place Order Buttons -->
+                        <div class="form-buttons">
+                            <button type="button" id="backToShipping" class="btn-secondary"><i class="fa-solid fa-arrow-left"></i> Back to Shipping</button>
+                            <button class="btn-primary" type="submit">Place Order - ₹18,878.82</button>
+                        </div>
+                    </form>
+                </div>
+
+
 
                 <div class="order-summary">
                     <h2>Order Summary</h2>
