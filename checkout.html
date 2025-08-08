@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Orders | MasterMart</title>
+    <link rel="shortcut icon" href="assets/favicon/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/checkout.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+
+<body>
+    <div class="header-wrapper">
+        <header>
+            <nav class="navbar">
+                <div class="logo" onclick="gotoHome()">
+                    <img src="assets/MasterEagle.png" alt="Logo" />
+                    <span>MasterMart</span>
+                </div>
+                <div class="nav-actions">
+                    <button id="searchToggleBtn" title="Search">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                    <div class="cart-wrapper">
+                        <button onclick="gotoCart()" title="Cart">
+                            <i class="fa-solid fa-shopping-cart"></i>
+                            <span id="cartBadge">1</span>
+                        </button>
+                    </div>
+
+                    <div class="wishlist-wrapper">
+                        <button onclick="gotoWishlist()" title="Wishlist">
+                            <i class="fa-solid fa-heart"></i>
+                            <span id="wishlistBadge"></span>
+                        </button>
+                    </div>
+
+                    <div class="profile-menu">
+                        <button onclick="toggleDropdown(event)">
+                            <i class="fa-solid fa-user"></i>
+                        </button>
+                        <div class="dropdown" id="profileDropdown">
+                            <div id="name" style="text-align: center; background: #ccc; border-radius: 5px;"></div>
+                            <button onclick="openProfile()"><i class="fa-solid fa-user"></i> My Profile</button>
+                            <hr>
+                            <button onclick="toggleTheme()"><i class="fa-solid fa-moon"></i> Light/Dark</button>
+                            <hr>
+                            <button onclick="gotoLogin()" id="login"><i
+                                    class="fa-solid fa-arrow-right-from-bracket"></i> <span
+                                    id="loginMenuItem">LogIn</span></button>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <div class="floating-search" id="floatingSearch">
+            <input type="text" id="searchInput" placeholder="Search products..." />
+            <button id="clearSearchBtn" class="clear-btn"><i class="fa-solid fa-xmark"></i></button>
+            <button id="searchButton"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </div>
+    </div>
+
+    <main>
+        <div class="checkout-container">
+            <div class="step-header">
+                <span class="step active">1</span> Shipping
+                <span class="divider"></span>
+                <span class="step">2</span> Payment
+                <span class="divider"></span>
+                <span class="step">3</span> Confirmation
+            </div>
+
+            <div class="checkout-content">
+                <div class="shipping-form">
+                    <h2><span class="icon"><i class="fa-solid fa-truck"></i></span> Shipping Information</h2>
+
+                    <form>
+                        <div class="form-row single">
+                            <div class="form-group icon-input">
+                                <label>First Name *</label>
+                                <div class="input-wrapper">
+                                    <span class="input-icon"><i class="fa-solid fa-user"></i></span>
+                                    <input type="text" placeholder=" " required />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Last Name *</label>
+                                <input type="text" placeholder=" " required />
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group icon-input">
+                                <label>Email *</label>
+                                <div class="input-wrapper">
+                                    <span class="input-icon"><i class="fa-solid fa-envelope"></i></span>
+                                    <input type="email" placeholder=" " required />
+                                </div>
+                            </div>
+                            <div class="form-group icon-input">
+                                <label>Phone Number *</label>
+                                <div class="input-wrapper">
+                                    <span class="input-icon"><i class="fa-solid fa-phone"></i></span>
+                                    <input type="text" maxlength="10" pattern="\d*" placeholder=" " required />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group full">
+                            <div class="form-group icon-input">
+                                <label>Address *</label>
+                                <div class="input-wrapper">
+                                    <span class="input-icon"><i class="fa-solid fa-location-dot"></i></span>
+                                    <textarea rows="2" placeholder="Street address, apartment, suite, etc."
+                                        required></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>City *</label>
+                                <input type="text" required />
+                            </div>
+                            <div class="form-group">
+                                <label>State *</label>
+                                <select required>
+                                    <option value="">Select state</option>
+                                    <option>Maharashtra</option>
+                                    <option>Gujarat</option>
+                                    <option>Delhi</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>PIN Code *</label>
+                                <input type="text" placeholder="400001" maxlength="6" pattern="\d*" required />
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-primary">Continue to Payment</button>
+                    </form>
+                </div>
+
+                <div class="order-summary">
+                    <h2>Order Summary</h2>
+                    <div class="product">
+                        <div class="product-img"></div>
+                        <div class="product-details">
+                            <p class="product-name">Smart Fitness Watch with Heart Rate...</p>
+                            <p class="product-price">₹15,999.00</p>
+                            <p class="product-qty">Qty: 1</p>
+                        </div>
+                    </div>
+                    <div class="summary-line">
+                        <span>Subtotal</span><span>₹15,999.00</span>
+                    </div>
+                    <div class="summary-line">
+                        <span>Shipping</span><span class="free">Free</span>
+                    </div>
+                    <div class="summary-line">
+                        <span>Tax (GST 18%)</span><span>₹2,879.82</span>
+                    </div>
+                    <div class="summary-line total">
+                        <span>Total</span><span>₹18,878.82</span>
+                    </div>
+                    <p class="secure-note">🔒 Secure 256-bit SSL encryption</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>© <span class="mastereagle" onclick="devFolio()">MasterEagle</span>. All rights reserved. Built with <i
+                class="fas fa-heart"></i></p>
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDTkV-Tz1ukcViGLoHzkKGII7Uw-EOoN0w",
+            authDomain: "mastermart-19050.firebaseapp.com",
+            projectId: "mastermart-19050",
+            databaseURL: "https://mastermart-19050-default-rtdb.asia-southeast1.firebasedatabase.app",
+            storageBucket: "mastermart-19050.appspot.com",
+            messagingSenderId: "724870756192",
+            appId: "1:724870756192:web:913ef96cf4215427f01005"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+    </script>
+    <script src="js/auth.js"></script>
+    <script src="js/checkout.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/header.js"></script>
+</body>
+
+</html>

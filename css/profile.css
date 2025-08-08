@@ -136,7 +136,7 @@ select {
 
 button#save {
     margin-top: 15px;
-    background: purple;
+    background: var(--purplee);
     color: white;
     padding: 10px 20px;
     border: none;

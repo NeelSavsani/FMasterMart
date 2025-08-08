@@ -1,5 +1,7 @@
 const UNSPLASH_ACCESS_KEY = "_HM4vCxWz8KfJ5FbjpHEMhz-prB93VqI1d-46K3sCsk";
 
+let globalTotalQty = 0; // ✅ Global quantity tracker
+
 async function fetchImage(query) {
     const endpoint = `https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&orientation=squarish&per_page=1&client_id=${UNSPLASH_ACCESS_KEY}`;
     try {
@@ -22,7 +24,6 @@ firebase.auth().onAuthStateChanged(function (user) {
     }
 });
 
-
 async function renderCart(user) {
     const uid = user.uid;
     const cartRef = firebase.database().ref(`Cart/${uid}`);
@@ -38,6 +39,7 @@ async function renderCart(user) {
         emptyCart.style.display = "block";
         cartSummary.style.display = "none";
         updateCartBadge(0);
+        globalTotalQty = 0;
         return;
     }
 
@@ -92,8 +94,17 @@ async function renderCart(user) {
     document.getElementById("summaryAmount").textContent = `₹${totalAmount.toFixed(2)}`;
     document.getElementById("grandTotal").textContent = `₹${totalAmount.toFixed(2)}`;
     updateCartBadge(totalQty);
+    globalTotalQty = totalQty; // ✅ Update global quantity
     console.log("Cart rendered with items:", cartData);
     console.log("Total items in cart:", totalQty);
+}
+
+function checkOut() {
+    if (globalTotalQty > 0) {
+        window.location.href = "/checkout.html";
+    } else {
+        alert("Your cart is empty. Please add items before checkout.");
+    }
 }
 
 document.addEventListener("auth-ready", (e) => {
