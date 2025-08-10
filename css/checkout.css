@@ -428,3 +428,29 @@ input[type=number] {
 .divider.active {
     background: #7b2cbf;
 }
+
+@media (max-width: 640px) {
+  .payment-section { min-width: 0; padding: 20px; }
+
+  /* stack all inputs full-width */
+  .payment-details input {
+    width: 100% !important;
+    margin-right: 0 !important;
+    margin-bottom: 10px;
+  }
+}
+
+/* Medium screens: keep MM/YY & CVV on one line with a small gutter */
+@media (min-width: 641px) and (max-width: 900px) {
+  /* Card No. & Name full width */
+  .payment-details input:first-child,
+  .payment-details input:last-child { width: 100% !important; }
+
+  /* MM/YY & CVV split 50/50 with a small gap */
+  .payment-details input:nth-child(2),
+  .payment-details input:nth-child(3) {
+    width: calc(50% - 8px) !important;
+    margin-right: 0 !important;
+  }
+  .payment-details input:nth-child(2) { margin-right: 16px !important; }
+}
