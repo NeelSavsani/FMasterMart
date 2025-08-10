@@ -115,18 +115,6 @@ label {
     margin-bottom: 6px;
 }
 
-.btn-primary {
-    margin-top: 20px;
-    width: 100%;
-    background: #7b2cbf;
-    color: white;
-    padding: 14px;
-    font-size: 16px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
 .order-summary {
     width: 300px;
     background: #fff;
@@ -363,24 +351,29 @@ input[type=number] {
     padding: 12px;
     border: 1px solid #ccc;
     border-radius: 6px;
-    width: 40%;
-    gap: 10px;
-    margin: 1%;
     font-size: 15px;
+    margin-bottom: 2%;
+}
+
+#cardName{
+    text-transform: uppercase;
+}
+
+.payment-details input:nth-child(2){
+    margin-right: 12%;
 }
 
 .payment-details input:nth-child(2),
 .payment-details input:nth-child(3) {
-    width: 39.5%;
-    margin-right: 0%;
+    width: 40%;
 }
 
 .payment-details input:first-child,
 .payment-details input:last-child{
-    width: 84%;
+    width: 96%;
 }
 
-.payment-section .btn-primary {
+.btn-primary {
     margin-top: 20px;
     width: 100%;
     background: #7b2cbf;
@@ -392,16 +385,21 @@ input[type=number] {
     cursor: pointer;
 }
 
-.payment-section .btn-secondary{
+.btn-secondary{
     margin-top: 20px;
     width: 100%;
-    background: #bbb;
+    background: transparent;
     color: black;
     padding: 14px;
     font-size: 16px;
-    border: none;
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-secondary:hover {
+    background-color: #eee;
 }
 
 .payment-section .btn-primary:hover {
@@ -415,7 +413,6 @@ input[type=number] {
     margin-top: 20px;
 }
 
-.btn-secondary:hover {
-    background-color: #bbb;
+.divider.active {
+    background: #7b2cbf;
 }
-

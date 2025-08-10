@@ -68,9 +68,9 @@
         <div class="checkout-container">
             <div class="step-header">
                 <span class="step active">1</span> Shipping
-                <span class="divider"></span>
+                <span class="divider 1"></span>
                 <span class="step">2</span> Payment
-                <span class="divider"></span>
+                <span class="divider 2"></span>
                 <span class="step">3</span> Confirmation
             </div>
 
@@ -105,7 +105,8 @@
                                 <label>Phone Number *</label>
                                 <div class="input-wrapper">
                                     <span class="input-icon"><i class="fa-solid fa-phone"></i></span>
-                                    <input type="text" maxlength="10" pattern="\d*" placeholder=" " required />
+                                    <input type="number"
+                                        oninput="if(this.value.length > 10) this.value = this.value.slice(0, 10);">
                                 </div>
                             </div>
                         </div>
@@ -137,11 +138,20 @@
                             </div>
                             <div class="form-group">
                                 <label>PIN Code *</label>
-                                <input type="text" placeholder="400001" maxlength="6" pattern="\d*" required />
+                                <input type="number"
+                                    oninput="if(this.value.length > 6) this.value = this.value.slice(0, 6);">
                             </div>
                         </div>
 
-                        <button type="submit" class="btn-primary">Continue to Payment</button>
+                        <div class="form-buttons">
+                            <button type="button" class="btn-secondary" onclick="gotoCart()">
+                                <i class="fa-solid fa-arrow-left"></i> Cancel Order
+                            </button>
+                            <button type="submit" class="btn-primary">
+                                Continue to Payment
+                            </button>
+                        </div>
+
                     </form>
                 </div>
                 <div class="payment-section" style="display: none;">
@@ -149,16 +159,17 @@
 
                     <form id="paymentForm">
                         <div class="form-group">
-                            <label><input type="radio" name="payment-method" value="card" checked /> Credit/Debit Card</label>
+                            <label><input type="radio" name="payment-method" value="card" checked /> Credit/Debit
+                                Card</label>
                             <label><input type="radio" name="payment-method" value="upi" /> UPI</label>
                             <label><input type="radio" name="payment-method" value="cod" /> Cash on Delivery</label>
                         </div>
 
                         <div id="card-details" class="payment-details">
-                            <input type="text" placeholder="Card Number" maxlength="19" required />
-                            <input type="text" placeholder="MM/YY" maxlength="5" required />
-                            <input type="text" placeholder="CVV" maxlength="3" required />
-                            <input type="text" placeholder="Name on Card" required />
+                            <input type="text" id="cardNumber" placeholder="Card Number" inputmode="numeric" autocomplete="cc-number" required />
+                            <input type="text" id="expiry" placeholder="MM/YY" inputmode="numeric" maxlength="7" required />
+                            <input type="text" id="cvv" placeholder="CVV" maxlength="3" inputmode="numeric" required />
+                            <input type="text" placeholder="Name on Card" required id="cardName" />
                         </div>
 
                         <div id="upi-details" class="payment-details" style="display: none;">
@@ -166,12 +177,13 @@
                         </div>
 
                         <div id="cod-details" class="payment-details" style="display: none;">
-                            <p>Cash on Delivery selected. You’ll pay at the time of delivery.</p>
+                            <p>Cash on Delivery selected. You'll pay at the time of delivery.</p>
                         </div>
 
                         <!-- Back & Place Order Buttons -->
                         <div class="form-buttons">
-                            <button type="button" id="backToShipping" class="btn-secondary"><i class="fa-solid fa-arrow-left"></i> Back to Shipping</button>
+                            <button type="button" id="backToShipping" class="btn-secondary"><i
+                                    class="fa-solid fa-arrow-left"></i> Back to Shipping</button>
                             <button class="btn-primary" type="submit">Place Order - ₹18,878.82</button>
                         </div>
                     </form>
@@ -201,7 +213,7 @@
                     <div class="summary-line total">
                         <span>Total</span><span>₹18,878.82</span>
                     </div>
-                    <p class="secure-note">🔒 Secure 256-bit SSL encryption</p>
+                    <p class="secure-note"><i class="fa-solid fa-lock"></i> Secure 256-bit SSL encryption</p>
                 </div>
             </div>
         </div>
