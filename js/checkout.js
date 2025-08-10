@@ -1,66 +1,76 @@
+// ------- Step navigation -------
 const shippingForm = document.querySelector('.shipping-form form');
 const paymentSection = document.querySelector('.payment-section');
 const stepIndicators = document.querySelectorAll('.step');
 const Indicators = document.querySelectorAll('.divider');
 const backToShippingButton = document.getElementById('backToShipping');
+const paymentFormEl = document.getElementById('paymentForm');
+const confirmationSection = document.querySelector('.confirmation-section');
 
-// Move to payment step
-shippingForm.addEventListener('submit', function (e) {
-    e.preventDefault();
+// Enable only the active payment method's inputs (so hidden required fields don't block submit)
+function setActivePaymentSection(method) {
+  document.querySelectorAll('.payment-details').forEach(section => {
+    const active = section.id === `${method}-details`;
+    section.style.display = active ? 'block' : 'none';
 
-    document.querySelector('.shipping-form').style.display = 'none';
-    if (paymentSection) paymentSection.style.display = 'block';
+    section.querySelectorAll('input, select, textarea').forEach(inp => {
+      if (active) {
+        inp.disabled = false;
+        if (inp.dataset.wasRequired === 'true') inp.required = true;
+        delete inp.dataset.wasRequired;
+      } else {
+        if (inp.required) inp.dataset.wasRequired = 'true';
+        inp.required = false;
+        inp.disabled = true;
+      }
+    });
+  });
+}
 
-    // Update step UI
-    // stepIndicators[0].classList.remove('active');
-    stepIndicators[1].classList.add('active');
-    Indicators[0].classList.add('active');
-    syncPaymentDetails();
+function syncPaymentDetails() {
+  const checked = document.querySelector('input[name="payment-method"]:checked');
+  if (checked) setActivePaymentSection(checked.value);
+}
+
+// Move to Payment
+shippingForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  document.querySelector('.shipping-form').style.display = 'none';
+  if (paymentSection) paymentSection.style.display = 'block';
+
+  stepIndicators[1].classList.add('active');
+  Indicators[0].classList.add('active');
+
+  syncPaymentDetails();
 });
 
-// Back to shipping step
-backToShippingButton.addEventListener('click', function () {
+// Back to Shipping
+if (backToShippingButton) {
+  backToShippingButton.addEventListener('click', () => {
     document.querySelector('.shipping-form').style.display = 'block';
     if (paymentSection) paymentSection.style.display = 'none';
 
-    // Update step UI
     stepIndicators[0].classList.add('active');
     stepIndicators[1].classList.remove('active');
     Indicators[0].classList.remove('active');
-});
+  });
+}
 
-// Payment method toggle logic (optional)
+// Toggle payment method
 document.querySelectorAll('input[name="payment-method"]').forEach(radio => {
-    radio.addEventListener('change', function () {
-        document.querySelectorAll('.payment-details').forEach(el => {
-            el.style.display = 'none';
-        });
-        const selected = document.getElementById(this.value + '-details');
-        if (selected) selected.style.display = 'block';
-        syncPaymentDetails();
-    });
+  radio.addEventListener('change', syncPaymentDetails);
 });
 
-function syncPaymentDetails() {
-// Hide all detail blocks
-document.querySelectorAll('.payment-details').forEach(el => el.style.display = 'none');
-
-// Show the block matching the checked radio
-const checked = document.querySelector('input[name="payment-method"]:checked');
-if (checked) {
-    const target = document.getElementById(`${checked.value}-details`);
-    if (target) target.style.display = 'block'; // matches CSS flex layout
-}
-}
-
+// ------- Card number mask (#### - #### - #### - ####) -------
 document.addEventListener('DOMContentLoaded', () => {
+  syncPaymentDetails(); // set initial enabled/disabled state
+
   const card = document.getElementById('cardNumber');
-  const expiryField = document.getElementById('expiry'); // target to focus
+  const expiryField = document.getElementById('expiry');
   if (!card) return;
 
   const MAX_DIGITS = 16;
   const SEP = ' - ';
-
   const digitsOnly = s => s.replace(/\D/g, '');
   const group4 = s => (s.match(/.{1,4}/g) || []).join(SEP);
 
@@ -82,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     setCaretForDigitIndex(card, digitsLeft);
 
-    // Auto-focus expiry when user enters the 16th digit at the end (not on deletes)
+    // Auto-focus expiry when the 16th digit is typed and caret is at end
     const isInsert = !e || (e.inputType && !e.inputType.startsWith('delete'));
     const caretAtEnd = digitsLeft === allDigits.length;
     if (expiryField && isInsert && allDigits.length === MAX_DIGITS && caretAtEnd) {
@@ -92,33 +102,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // pass the event so we can detect insert vs delete
   card.addEventListener('input', (e) => formatCardPreserveCaret(e));
 
-  // Smart backspace: if caret is just after the separator " - ", delete the previous digit
+  // Smart backspace over separators
   card.addEventListener('keydown', (e) => {
     if (e.key !== 'Backspace') return;
 
     const selStart = card.selectionStart ?? 0;
     const selEnd = card.selectionEnd ?? 0;
-
-    // Let default handle range deletions; we'll reformat on 'input'
     if (selStart !== selEnd) return;
 
     const v = card.value;
-    const SEP_STR = ' - ';
-    const justAfterFullSep = selStart >= 3 && v.slice(selStart - 3, selStart) === SEP_STR;
+    const justAfterFullSep = selStart >= 3 && v.slice(selStart - 3, selStart) === ' - ';
     const justAfterHyphen   = selStart > 0 && v[selStart - 1] === '-';
 
     if (justAfterFullSep || justAfterHyphen) {
       e.preventDefault();
-
-      // Count of digits before the separator
       const digitIdx = digitsOnly(v.slice(0, justAfterFullSep ? selStart - 3 : selStart - 1)).length;
-
-      const totalDigits = digitsOnly(v);
+      const total = digitsOnly(v);
       if (digitIdx > 0) {
-        const newDigits = totalDigits.slice(0, digitIdx - 1) + totalDigits.slice(digitIdx);
+        const newDigits = total.slice(0, digitIdx - 1) + total.slice(digitIdx);
         card.value = group4(newDigits);
         setCaretForDigitIndex(card, digitIdx - 1);
       } else {
@@ -128,23 +131,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Block non-digit keypresses (navigation/backspace still works)
-  card.addEventListener('keypress', (e) => {
-    if (!/[0-9]/.test(e.key)) e.preventDefault();
-  });
+  // Block non-digits
+  card.addEventListener('keypress', (e) => { if (!/[0-9]/.test(e.key)) e.preventDefault(); });
 });
 
-/* ---------------------------
-   Expiry mask (MM / YY)
-   Auto-focus CVV on completion
-----------------------------*/
+// ------- Expiry mask (MM / YY) → focus CVV -------
 (function setupExpiryMask() {
   const expiry = document.getElementById('expiry');
   if (!expiry) return;
 
   const SEP = ' / ';
   const MAX_DIGITS = 4;
-
   const digitsOnly = s => s.replace(/\D/g, '');
   const formatExpiry = s => {
     const mm = s.slice(0, 2);
@@ -164,13 +161,10 @@ document.addEventListener('DOMContentLoaded', () => {
   function formatPreserveCaret() {
     const caret = expiry.selectionStart ?? 0;
     const digitsLeft = digitsOnly(expiry.value.slice(0, caret)).length;
-
     const all = digitsOnly(expiry.value).slice(0, MAX_DIGITS);
     expiry.value = formatExpiry(all);
-
     setCaretForDigitIndex(expiry, digitsLeft);
 
-    // Auto-focus CVV when complete
     if (all.length === MAX_DIGITS) {
       const next = document.getElementById('cvv') || expiry.closest('form')?.querySelector('input[placeholder="CVV"]');
       if (next) next.focus();
@@ -179,16 +173,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   expiry.addEventListener('input', formatPreserveCaret);
 
-  // Smart backspace over separator
+  // Smart backspace over " / "
   expiry.addEventListener('keydown', (e) => {
     if (e.key !== 'Backspace') return;
-
     const selStart = expiry.selectionStart ?? 0;
     const selEnd = expiry.selectionEnd ?? 0;
-    if (selStart !== selEnd) return; // let default handle range deletes
+    if (selStart !== selEnd) return;
 
     const v = expiry.value;
-    const afterFullSep = selStart >= 3 && v.slice(selStart - 3, selStart) === SEP;
+    const afterFullSep = selStart >= 3 && v.slice(selStart - 3, selStart) === ' / ';
     const afterSlash = selStart > 0 && v[selStart - 1] === '/';
 
     if (afterFullSep || afterSlash) {
@@ -203,7 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Block non-digits and prevent beyond 4 digits (unless replacing selection)
+  // Block non-digits & > 4 digits when not replacing selection
   expiry.addEventListener('keypress', (e) => {
     if (!/[0-9]/.test(e.key)) return e.preventDefault();
     const selection = (expiry.selectionEnd ?? 0) - (expiry.selectionStart ?? 0);
@@ -211,49 +204,67 @@ document.addEventListener('DOMContentLoaded', () => {
     if (selection === 0 && currentDigits >= MAX_DIGITS) e.preventDefault();
   });
 
-  // Validate month on blur
+  // Validate on blur
   expiry.addEventListener('blur', () => {
     const raw = digitsOnly(expiry.value);
     if (raw.length !== 4) { expiry.value = ''; return; }
     const mm = +raw.slice(0, 2);
     const yy = raw.slice(2, 4);
     if (mm < 1 || mm > 12) { expiry.value = ''; return; }
-    expiry.value = raw.slice(0, 2) + SEP + yy; // normalize
+    expiry.value = raw.slice(0, 2) + ' / ' + yy;
   });
 })();
 
-/* ---------------------------
-   CVV (3 digits) → auto-focus Name on Card
-----------------------------*/
+// ------- CVV (3 digits) → focus Name on Card -------
 (() => {
   const cvv = document.getElementById('cvv');
-  const nameOnCard = document.getElementById('cardName') 
-                  || document.querySelector('input[placeholder="Name on Card"]');
+  const nameOnCard = document.getElementById('cardName') ||
+                     document.querySelector('input[placeholder="Name on Card"]');
   if (!cvv || !nameOnCard) return;
 
   const digitsOnly = s => s.replace(/\D/g, '');
 
   cvv.addEventListener('input', (e) => {
-    // keep only digits, cap at 3
-    const caretWasEnd = cvv.selectionStart === cvv.value.length && cvv.selectionEnd === cvv.value.length;
+    const atEndBefore = cvv.selectionStart === cvv.value.length && cvv.selectionEnd === cvv.value.length;
     let v = digitsOnly(cvv.value).slice(0, 3);
     cvv.value = v;
-    if (caretWasEnd) {
+    if (atEndBefore) {
       const end = cvv.value.length;
       try { cvv.setSelectionRange(end, end); } catch {}
     }
 
-    // focus Name on Card only when user *adds* the 3rd digit and caret is at end
     const isInsert = !e.inputType || !e.inputType.startsWith('delete');
-    if (isInsert && v.length === 3 && caretWasEnd) {
-      nameOnCard.focus();
-      const end = nameOnCard.value.length;
-      try { nameOnCard.setSelectionRange(end, end); } catch {}
+    if (isInsert && v.length === 3 && atEndBefore) {
+      requestAnimationFrame(() => {
+        nameOnCard.focus();
+        const end = nameOnCard.value.length;
+        try { nameOnCard.setSelectionRange(end, end); } catch {}
+      });
     }
   });
 
-  // Optional: block non-digits on keypress
-  cvv.addEventListener('keypress', (e) => {
-    if (!/[0-9]/.test(e.key)) e.preventDefault();
-  });
+  cvv.addEventListener('keypress', (e) => { if (!/[0-9]/.test(e.key)) e.preventDefault(); });
 })();
+
+// ------- Confirmation on Place Order -------
+if (paymentFormEl && confirmationSection) {
+  paymentFormEl.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    paymentSection.style.display = 'none';
+    confirmationSection.style.display = 'block';
+
+    stepIndicators[2]?.classList.add('active');
+    Indicators[1]?.classList.add('active');
+
+    const idEl = document.getElementById('orderId');
+    if (idEl) idEl.textContent = 'ORD-' + Date.now();
+
+    document.getElementById('continueShoppingBtn')?.addEventListener('click', () => {
+      if (typeof gotoHome === 'function') gotoHome();
+    });
+    document.getElementById('trackOrderBtn')?.addEventListener('click', () => {
+      alert('Tracking coming soon!');
+    });
+  });
+}

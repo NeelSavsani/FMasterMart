@@ -115,7 +115,7 @@ label {
     margin-bottom: 6px;
 }
 
-label i.fa-solid.fa-credit-card{
+label i.fa-solid.fa-credit-card {
     color: orangered;
 }
 
@@ -193,14 +193,14 @@ label i.fa-solid.fa-truck {
 }
 
 /* For Chrome, Safari, Edge, Opera */
-input[type=number]::-webkit-outer-spin-button,
-input[type=number]::-webkit-inner-spin-button {
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
 
 /* For Firefox */
-input[type=number] {
+input[type="number"] {
     -moz-appearance: textfield;
 }
 
@@ -367,11 +367,11 @@ input[type=number] {
     margin-bottom: 2%;
 }
 
-#cardName{
+#cardName {
     text-transform: uppercase;
 }
 
-.payment-details input:nth-child(2){
+.payment-details input:nth-child(2) {
     margin-right: 12%;
 }
 
@@ -381,7 +381,7 @@ input[type=number] {
 }
 
 .payment-details input:first-child,
-.payment-details input:last-child{
+.payment-details input:last-child {
     width: 96%;
 }
 
@@ -397,7 +397,7 @@ input[type=number] {
     cursor: pointer;
 }
 
-.btn-secondary{
+.btn-secondary {
     margin-top: 20px;
     width: 100%;
     background: transparent;
@@ -430,27 +430,79 @@ input[type=number] {
 }
 
 @media (max-width: 640px) {
-  .payment-section { min-width: 0; padding: 20px; }
+    .payment-section {
+        min-width: 0;
+        padding: 20px;
+    }
 
-  /* stack all inputs full-width */
-  .payment-details input {
-    width: 100% !important;
-    margin-right: 0 !important;
-    margin-bottom: 10px;
-  }
+    /* stack all inputs full-width */
+    .payment-details input {
+        width: 100% !important;
+        margin-right: 0 !important;
+        margin-bottom: 10px;
+    }
 }
 
 /* Medium screens: keep MM/YY & CVV on one line with a small gutter */
 @media (min-width: 641px) and (max-width: 900px) {
-  /* Card No. & Name full width */
-  .payment-details input:first-child,
-  .payment-details input:last-child { width: 100% !important; }
 
-  /* MM/YY & CVV split 50/50 with a small gap */
-  .payment-details input:nth-child(2),
-  .payment-details input:nth-child(3) {
-    width: calc(50% - 8px) !important;
-    margin-right: 0 !important;
-  }
-  .payment-details input:nth-child(2) { margin-right: 16px !important; }
+    /* Card No. & Name full width */
+    .payment-details input:first-child,
+    .payment-details input:last-child {
+        width: 100% !important;
+    }
+
+    /* MM/YY & CVV split 50/50 with a small gap */
+    .payment-details input:nth-child(2),
+    .payment-details input:nth-child(3) {
+        width: calc(50% - 8px) !important;
+        margin-right: 0 !important;
+    }
+
+    .payment-details input:nth-child(2) {
+        margin-right: 16px !important;
+    }
+}
+
+/* Confirmation (Step 3) */
+.confirmation-section{
+  flex: 1;
+  min-width: 600px;               /* same feel as payment */
+  background: #fff;
+  padding: 25px;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+}
+
+.confirmation-card{ display:flex; flex-direction:column; gap:18px; }
+
+.confirm-top{
+  display:flex; align-items:center; gap:10px;
+  font-size:20px; font-weight:600; color:#1e8e3e;
+}
+.confirm-top i{ color:#22c55e; }
+
+.confirm-center{ text-align:center; }
+.confirm-center i{ font-size:64px; color:#22c55e; display:block; margin:10px auto 14px; }
+.confirm-center h2{ margin:0 0 6px; }
+.confirm-center p{ color:#666; margin:0 0 14px; }
+
+.order-id-box{
+  background:#f7f8fa; border:1px solid #eee;
+  padding:16px; border-radius:12px; margin:0 auto 14px;
+}
+.order-id{ font-size:15px; margin-bottom:4px; }
+
+.confirmation-actions{
+  display:flex; gap:16px; margin-top:8px;
+}
+.confirmation-actions .btn-secondary,
+.confirmation-actions .btn-primary{
+  flex:1; margin-top:0;           /* reuse your existing button styles */
+}
+
+/* Responsive */
+@media (max-width: 768px){
+  .confirmation-section{ min-width:0; }
+  .confirmation-actions{ flex-direction:column; }
 }
