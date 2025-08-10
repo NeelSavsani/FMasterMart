@@ -115,6 +115,18 @@ label {
     margin-bottom: 6px;
 }
 
+label i.fa-solid.fa-credit-card{
+    color: orangered;
+}
+
+label i.fa-solid.fa-rupiah-sign {
+    color: green;
+}
+
+label i.fa-solid.fa-truck {
+    color: #10455b;
+}
+
 .order-summary {
     width: 300px;
     background: #fff;
